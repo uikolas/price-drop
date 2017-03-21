@@ -1,6 +1,7 @@
 ## Price Drop
 
 Small app which allows to track prices of added products and get email notifications. Written in Laravel 5.4
+
 [Some photos of web page](public/images)
 
 ## Install
@@ -16,7 +17,7 @@ Small app which allows to track prices of added products and get email notificat
 Edit (rename from .env.example) .env file to fill info with your database and email info.
 
 ## How to use update and notification
-To Update products and notify use command:
+To update products and notify use command:
 
     php artisan update:products
 
@@ -30,5 +31,6 @@ Update and notify command will be run daily at 13:00 or change this value by you
 ## How to add parser?
 
 * Create a new class, which implements `\App\Parse\ParserInterface interface`
-* Then parser register in `\App\Providers\ParserServiceProvider` (add full class name)
-* And run `php artisan db:seed` to create parser in database
+* Use API or web crawler, to get product price and return `ParseObject`
+* Then created parser register in `\App\Providers\ParserServiceProvider` (add full class name)
+* And run `php artisan db:seed` to create parser reference in database
