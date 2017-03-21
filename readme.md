@@ -10,11 +10,12 @@ Small app which allows to track prices of added products and get email notificat
 
     composer install
 
+Edit (rename from .env.example) .env file to fill info with your database and email info. Then:
+
     php artisan migrate
 
     php artisan db:seed
 
-Edit (rename from .env.example) .env file to fill info with your database and email info.
 
 ## How to use update and notification
 To update products and notify use command:
