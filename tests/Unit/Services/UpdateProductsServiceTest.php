@@ -22,7 +22,7 @@ class UpdateProductsServiceTest extends TestCase
 {
     use DatabaseMigrations;
 
-    public function testUpdateAndNotify()
+    public function testNotifyWhenNewBestPriceIsLessThanOldPrice()
     {
         Notification::fake();
 
@@ -49,7 +49,7 @@ class UpdateProductsServiceTest extends TestCase
         );
     }
 
-    public function testUpdateWithoutNotify()
+    public function testDontNotifyWhenBestPriceIsGreaterThanOldPrice()
     {
         Notification::fake();
 
@@ -76,7 +76,7 @@ class UpdateProductsServiceTest extends TestCase
         );
     }
 
-    public function testNullUpdateAndNotify()
+    public function testNotifyWhenOldPriceWasNull()
     {
         Notification::fake();
 
@@ -103,7 +103,7 @@ class UpdateProductsServiceTest extends TestCase
         );
     }
 
-    public function testNullUpdateWithoutNotify()
+    public function testDontNotifyWhenBestPriceWasNull()
     {
         Notification::fake();
 
