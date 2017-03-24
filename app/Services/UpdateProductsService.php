@@ -40,15 +40,7 @@ class UpdateProductsService
             $newBestPrice           = $newBestProductRetailer ? $newBestProductRetailer->getPrice() : null;
 
             if ($newBestPrice) {
-                $sendNotification = false;
-
-                if ($oldBestPrice) {
-                    if ($newBestPrice->lessThan($oldBestPrice)) {
-                        $sendNotification = true;
-                    }
-                } else {
-                    $sendNotification= true;
-                }
+                $sendNotification = $oldBestPrice ? ($newBestPrice->lessThan($oldBestPrice) ? true : false) : true;
 
                 if ($sendNotification) {
                     $product->getUser()->notify(new PriceDrop($newBestProductRetailer));
