@@ -2,54 +2,39 @@
 
 namespace App\Console\Commands;
 
-use App\Manager\UpdatePriceManager;
-use App\Product;
-use App\ProductRetailer;
-use App\Services\UpdateProductRetailersService;
+use App\Jobs\ProcessProductRetailer;
+use App\Models\Product;
+use App\Models\ProductRetailer;
+use App\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class UpdateProductRetailersCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'update:product_retailers';
+    use DispatchesJobs;
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Command to Update product retailers';
+    protected $signature = 'retailers:update';
 
-    /**
-     * @var UpdateProductRetailersService
-     */
-    private $updateProductRetailersService;
+    protected $description = 'Update product retailer prices and notify';
 
-    /**
-     * UpdatePriceCommand constructor.
-     * @param UpdateProductRetailersService $updateProductRetailersService
-     */
-    public function __construct(UpdateProductRetailersService $updateProductRetailersService)
+    public function handle(): int
     {
-        parent::__construct();
-        $this->updateProductRetailersService = $updateProductRetailersService;
-    }
+        $this->info('Starting update...');
+        $retailersCount = ProductRetailer::count();
+        $this->info('Updating retailers: ' . $retailersCount);
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
-    {
-        $productRetailers = ProductRetailer::all();
+        $bar = $this->output->createProgressBar($retailersCount);
 
-        $this->updateProductRetailersService->update($productRetailers);
+        /** @var ProductRetailer $productRetailer */
+        foreach (ProductRetailer::lazy() as $productRetailer) {
+            $this->dispatch(new ProcessProductRetailer($productRetailer->id, true));
+            $bar->advance();
+        }
 
-        $this->info('Product retailers updated.');
+        $bar->finish();
+        $this->newLine();
+        $this->info('Finished');
+
+        return self::SUCCESS;
     }
 }

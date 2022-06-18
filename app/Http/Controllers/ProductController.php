@@ -2,94 +2,57 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Product\StoreProductRequest;
-use App\Product;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreProductRequest;
+use App\Models\Product;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->authorizeResource(Product::class, 'product');
     }
 
-    /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function index()
+    public function index(): View
     {
-        $products = Product::paginate(10);
+        $products = Auth::user()->products()->with('productRetailers')->simplePaginate(10);
 
-        return view('product.index', [
-            'products' => $products
-        ]);
+        return view('products.index', ['products' => $products]);
     }
 
-    /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function create()
+    public function create(): View
     {
-        return view('product.create');
+        return view('products.create');
     }
 
-    /**
-     * @param StoreProductRequest $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function store(StoreProductRequest $request)
+    public function store(StoreProductRequest $request): RedirectResponse
     {
         $product = new Product($request->all());
 
-        \Auth::user()->products()->save($product);
+        Auth::user()->products()->save($product);
 
         return redirect()->route('products.show', [$product])->with('success', 'Product added');
     }
 
-    /**
-     * @param Product $product
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function show(Product $product)
+    public function show(Product $product): View
     {
-        return view('product.view', [
-            'product' => $product
-        ]);
+        return view(
+            'products.show',
+            [
+                'product' => $product,
+                'bestRetailer' => $product->bestRetailer(),
+                'productRetailers' => $product->productRetailers()->simplePaginate(10),
+            ]
+        );
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function destroy(Product $product): RedirectResponse
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param Product $product
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Product $product)
-    {
+        $product->productRetailers()->delete();
         $product->delete();
 
-        return redirect()->route('products.index')->with('success', 'Product successful deleted');
+        return redirect()->route('products.index')->with('success', 'Product deleted');
     }
 }

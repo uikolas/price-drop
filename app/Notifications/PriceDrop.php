@@ -2,28 +2,18 @@
 
 namespace App\Notifications;
 
-use App\ProductRetailer;
+use App\Models\ProductRetailer;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class PriceDrop extends Notification
 {
-    //use Queueable;
-    /**
-     * @var ProductRetailer
-     */
-    private $productRetailer;
+    use Queueable;
 
-    /**
-     * Create a new notification instance.
-     *
-     * @param ProductRetailer $productRetailer
-     */
-    public function __construct(ProductRetailer $productRetailer)
+    public function __construct(private readonly ProductRetailer $productRetailer)
     {
-        $this->productRetailer = $productRetailer;
     }
 
     /**
@@ -46,7 +36,7 @@ class PriceDrop extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Price drop for: ' . $this->productRetailer->getProduct()->name)
+            ->subject('Price drop for: ' . $this->productRetailer->product->name)
             ->markdown('mails.notification.price-drop', [
                 'productRetailer' => $this->productRetailer
             ]);

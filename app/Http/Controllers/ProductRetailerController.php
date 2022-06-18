@@ -2,87 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProductRetailer\StoreProductRetailerRequest;
-use App\Product;
-use App\ProductRetailer;
-use App\Retailer;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreProductRetailerRequest;
+use App\Jobs\ProcessProductRetailer;
+use App\Models\Product;
+use App\Models\ProductRetailer;
+use App\RetailerType;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class ProductRetailerController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        // https://github.com/laravel/ideas/issues/1612
+        $this->authorizeResource('App\Models\ProductRetailer,product', 'retailer,product');
     }
 
-    /**
-     * @param Product $product
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function create(Product $product)
+    public function create(Product $product): View
     {
-        $retailers = Retailer::all();
-
-        return view('product-retailer.create', [
-            'product'   => $product,
-            'retailers' => $retailers
-        ]);
+        return view('retailers.create', ['product' => $product, 'types' => RetailerType::cases()]);
     }
 
-    /**
-     * @param StoreProductRetailerRequest $request
-     * @param Product $product
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function store(StoreProductRetailerRequest $request, Product $product)
+    public function store(StoreProductRetailerRequest $request, Product $product): RedirectResponse
     {
-        $retailer = Retailer::findOrFail($request->get('retailer'));
+        // $this->authorize('create', [ProductRetailer::class, $product]);
 
         $productRetailer = new ProductRetailer($request->all());
+        $product->productRetailers()->save($productRetailer);
 
-        $productRetailer->product()->associate($product);
-        $productRetailer->retailer()->associate($retailer);
-
-        $productRetailer->save();
+        $this->dispatch(new ProcessProductRetailer($productRetailer->id));
 
         return redirect()->route('products.show', [$product])->with('success', 'Product retailer added');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function destroy(ProductRetailer $retailer): RedirectResponse
     {
-        //
-    }
+        // $this->authorize('delete', $retailer);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+        $retailer->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param ProductRetailer $productRetailer
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(ProductRetailer $productRetailer)
-    {
-        $product = $productRetailer->getProduct();
-
-        $productRetailer->delete();
-
-        return redirect()->route('products.show', [$product])->with('success', 'Product retailer successful deleted');
+        return redirect()->back()->with('success', 'Product retailer removed');
     }
 }

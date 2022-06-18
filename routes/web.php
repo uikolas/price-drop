@@ -1,5 +1,11 @@
 <?php
 
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductRetailerController;
+use App\Http\Controllers\TriggerProductRetailerUpdate;
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,28 +17,24 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+
+Route::get('/login', [LoginController::class, 'show'])->name('login');
+Route::post('/login', [LoginController::class, 'authenticate']);
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/', [ProductController::class, 'index']);
+    Route::resource('products', ProductController::class)->only(['index', 'create', 'store', 'show', 'destroy']);
+    Route::resource('products.retailers', ProductRetailerController::class)
+        ->shallow()
+        ->only(['create', 'store', 'destroy']);
+    Route::post('/retailers/{retailer}/trigger', TriggerProductRetailerUpdate::class)->name('trigger');
 });
 
-Route::resource('products', 'ProductController');
 
-Route::get('product-retailers/create/{product}', [
-    'as'   => 'product-retailers.create',
-    'uses' => 'ProductRetailerController@create'
-]);
-Route::post('product-retailers/store/{product}', [
-    'as'   => 'product-retailers.store',
-    'uses' => 'ProductRetailerController@store'
-]);
-Route::resource('product-retailers', 'ProductRetailerController', [
-    'parameters' => [
-        'product-retailers' => 'productRetailer'
-    ],
-    'except' => [
-        'index', 'show', 'create', 'store'
-    ]
-]);
 
-Auth::routes();
-Route::get('/logout', 'Auth\LoginController@logout');
+//Route::get('/notification', function () {
+//    $invoice = \App\Models\ProductRetailer::find(1);
+//
+//    return (new \App\Notifications\PriceDrop($invoice))
+//        ->toMail($invoice->product->user);
+//});
