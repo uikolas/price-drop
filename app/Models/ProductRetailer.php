@@ -5,6 +5,7 @@ namespace App\Models;
 use App\RetailerType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\ProductRetailer
@@ -43,7 +44,7 @@ class ProductRetailer extends Model
         'type',
     ];
 
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
@@ -53,9 +54,9 @@ class ProductRetailer extends Model
         return $this->type === $retailerType;
     }
 
-    public function hasLowerPriceThan(?ProductRetailer $bestProductRetailer): bool
+    public function hasLowerPriceThan(?ProductRetailer $otherProductRetailer): bool
     {
-        if ($bestProductRetailer === null) {
+        if ($otherProductRetailer === null) {
             return true;
         }
 
@@ -63,6 +64,6 @@ class ProductRetailer extends Model
             return false;
         }
 
-        return \bccomp($this->price, $bestProductRetailer->price, 2) === -1;
+        return \bccomp($this->price, $otherProductRetailer->price, 2) === -1;
     }
 }
