@@ -26,7 +26,4 @@ It will create queue jobs which later needs to be handled by a queue
 3. Add test case inside `Tests\Unit\Scraper\Scrapers`
 
 ## Images
-index page
-![index](/resources/assets/index.png)
-show page
-![show](/resources/assets/show.png)
+[Go here](/resources/docs/Overview.md)
