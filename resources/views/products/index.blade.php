@@ -6,7 +6,7 @@
 
     @foreach($products as $product)
         <div class="pt-1">
-            <div class="card">
+            <div class="card shadow-sm">
                 <div class="card-body">
                     <h4 class="card-title">{{ $product->name }}</h4>
                     @php

@@ -4,23 +4,13 @@
 
 @section('content')
 
-{{--    @if ($errors->any())--}}
-{{--        <div class="alert alert-danger">--}}
-{{--            <ul>--}}
-{{--                @foreach ($errors->all() as $error)--}}
-{{--                    <li>{{ $error }}</li>--}}
-{{--                @endforeach--}}
-{{--            </ul>--}}
-{{--        </div>--}}
-{{--    @endif--}}
-
     <div class="card">
         <div class="card-body">
             <form action="{{ route('products.store') }}" method="POST">
 
-                <div class="mb-3">
-                    <label>Product name</label>
-                    <input type="text" name="name" class="form-control input-lg @error('name') is-invalid @enderror" />
+                <div class="form-floating mb-3">
+                    <input type="text" name="name" placeholder="Name" class="form-control input-lg @error('name') is-invalid @enderror" id="floatingInput" />
+                    <label for="floatingInput">Product name</label>
                     @error('name')
                     <div class="invalid-feedback">
                         {{ $message }}
@@ -28,8 +18,7 @@
                     @enderror
                 </div>
 
-
-                <input type="submit" value="Add" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-dark" />
 
                 @csrf
             </form>

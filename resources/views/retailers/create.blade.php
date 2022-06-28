@@ -4,46 +4,48 @@
 
 @section('content')
 
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+{{--        @if ($errors->any())--}}
+{{--            <div class="alert alert-danger">--}}
+{{--                <ul>--}}
+{{--                    @foreach ($errors->all() as $error)--}}
+{{--                        <li>{{ $error }}</li>--}}
+{{--                    @endforeach--}}
+{{--                </ul>--}}
+{{--            </div>--}}
+{{--        @endif--}}
 
-    <div>
-        <form action="{{ route('products.retailers.store', [$product]) }}" method="POST">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form action="{{ route('products.retailers.store', [$product]) }}" method="POST">
 
-            <div class="mb-3">
-                <label>Url</label>
-                <input type="text" name="url" class="form-control input-lg @error('url') is-invalid @enderror" />
-                @error('url')
-                <div class="invalid-feedback">
-                    {{ $message }}
+                <div class="form-floating mb-3">
+                    <input type="text" name="url" placeholder="Url" class="form-control input-lg @error('url') is-invalid @enderror" id="floatingInput" />
+                    <label for="floatingInput">Url</label>
+                    @error('url')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                    @enderror
                 </div>
-                @enderror
-            </div>
 
-            <div class="mb-3">
-                <label>Type</label>
-                <select class="form-select @error('type') is-invalid @enderror" name="type">
-                    @foreach($types as $type)
-                        <option value="{{ $type->value }}">{{ $type->name }}</option>
-                    @endforeach
-                </select>
-                @error('type')
-                <div class="invalid-feedback">
-                    {{ $message }}
+                <div class="form-floating mb-3">
+                    <select class="form-select @error('type') is-invalid @enderror" name="type" aria-label="Floating label select example" id="floatingSelect">
+                        @foreach($types as $type)
+                            <option value="{{ $type->value }}">{{ $type->name }}</option>
+                        @endforeach
+                    </select>
+                    <label for="floatingSelect">Type</label>
+                    @error('type')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                    @enderror
                 </div>
-                @enderror
-            </div>
 
-            <input type="submit" value="Add" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-dark" />
 
-            @csrf
-        </form>
+                @csrf
+            </form>
+        </div>
     </div>
 @endsection

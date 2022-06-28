@@ -7,18 +7,15 @@
 <body class="bg-light">
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{ route('products.index') }}"><i class="bi bi-droplet-fill"></i> Price drop</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{ route('products.index') }}">Products</a>
-                    </li>
-                </ul>
-            </div>
+        <div class="container">
+            <a class="navbar-brand me-md-auto" href="{{ route('products.index') }}"><i class="bi bi-droplet-fill"></i> Price drop</a>
+
+            <ul class="navbar-nav">
+                <li class="nav-item"><a href="{{ route('products.index') }}" class="nav-link">Products</a></li>
+                @auth
+                    <li class="nav-item"><a href="#" class="nav-link">Log out</a></li>
+                @endauth
+            </ul>
         </div>
     </nav>
 
