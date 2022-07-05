@@ -4,7 +4,7 @@
 
 @section('content')
 
-    <div class="card">
+    <div class="card shadow-sm">
         <div class="card-body">
             <form action="{{ route('products.store') }}" method="POST">
 

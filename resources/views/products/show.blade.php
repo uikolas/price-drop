@@ -58,7 +58,7 @@
                 {{ $productRetailers->links() }}
 
                 <div>
-                    <a href="{{ route('products.retailers.create', [$product]) }}" class="btn btn-primary">Add new retailer</a>
+                    <a href="{{ route('products.retailers.create', [$product]) }}" class="btn btn-dark">Add new retailer</a>
                 </div>
             </div>
         </div>

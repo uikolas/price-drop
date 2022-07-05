@@ -22,7 +22,7 @@
     @endforeach
 
     <div class="my-3">
-        <a href="{{ route('products.create') }}" class="btn btn-primary">Create new product</a>
+        <a href="{{ route('products.create') }}" class="btn btn-dark">Create new product</a>
     </div>
 
     {{ $products->links() }}
