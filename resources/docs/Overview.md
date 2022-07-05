@@ -1,4 +1,6 @@
 index page
-![index](/docs/assets/index.png)
+![index](assets/index.png)
+
+
 show page
-![show](/docs/assets/show.png)
+![show](assets/show.png)
