@@ -34,7 +34,7 @@
                     @foreach($productRetailers as $productRetailer)
                         <tr>
                             <td><span class="badge text-bg-secondary">{{ $productRetailer->type->name }}</span></td>
-                            <td><a href="{{ $productRetailer->url }}">{{ Str::limit($productRetailer->url, 50) }}</a></td>
+                            <td><a href="{{ $productRetailer->url }}" target="_blank">{{ Str::limit($productRetailer->url, 50) }}</a></td>
                             <td>{{ $productRetailer->price }}</td>
                             <td>{{ $productRetailer->updated_at }}</td>
                             <td>
