@@ -7,6 +7,7 @@ To run project locally it's recommended to install docker and use  [Laravel Sail
 After running docker with sail you can run:
 
 * `cp .env.example .env`
+* `php artisan key:generate`
 * `php artisan migrate`
 * `php artisan db:seed --class=UserSeeder`
 * open website and login (login info is inside `\Database\Seeders\UserSeeder`)
