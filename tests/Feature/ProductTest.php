@@ -97,8 +97,8 @@ class ProductTest extends TestCase
             ->delete('/products/' . $product->id);
 
         $response->assertRedirect();
-        self::assertNull(Product::find($product->id));
-        self::assertNull(Product::find($productRetailer->id));
+        $this->assertModelMissing($product);
+        $this->assertModelMissing($productRetailer);
     }
 
     public function test_cannot_delete_other_user_product(): void

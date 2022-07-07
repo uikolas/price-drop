@@ -122,7 +122,7 @@ class ProductRetailerTest extends TestCase
             ->delete('/retailers/' . $productRetailer->id);
 
         $response->assertRedirect();
-        self::assertNull(Product::find($productRetailer->id));
+        $this->assertModelMissing($productRetailer);
     }
 
     public function test_cannot_delete_product_retailer_for_other_user(): void
