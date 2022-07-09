@@ -13,7 +13,7 @@
                         $bestRetailer = $product->bestRetailer();
                     @endphp
                     @if ($bestRetailer)
-                        <h6 class="card-subtitle mb-2 text-muted">Best price so far: <strong>{{ $bestRetailer->price }}</strong></h6>
+                        <h6 class="card-subtitle mb-2 text-muted">Best price so far: <strong>{{ $bestRetailer->price }} {{ $bestRetailer->currency }}</strong></h6>
                     @endif
                     <a href="{{ route('products.show', [$product]) }}" class="card-link">View product</a>
                 </div>
