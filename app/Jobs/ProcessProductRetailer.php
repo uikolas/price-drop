@@ -10,7 +10,6 @@ use App\Scraper\ScraperFactory;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -19,30 +18,47 @@ class ProcessProductRetailer implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    /**
+     * The number of times the job may be attempted.
+     */
+    public int $tries = 3;
+
+    /**
+     * Delete the job if its models no longer exist.
+     */
+    public bool $deleteWhenMissingModels = true;
+
     public function __construct(
-        private readonly int $productRetailerId,
+        private readonly ProductRetailer $productRetailer,
         private readonly bool $notify = false,
     ) {
     }
 
     /**
-     * @throws ScraperNotFoundException|ScrapingFailedException|ModelNotFoundException
+     * @throws ScraperNotFoundException|ScrapingFailedException
      */
     public function handle(ScraperFactory $scraperFactory): void
     {
-        $productRetailer = ProductRetailer::findOrFail($this->productRetailerId);
-        $product = $productRetailer->product;
+        $product = $this->productRetailer->product;
         $bestRetailer = $product->bestRetailer();
 
         $data = $scraperFactory
-            ->createFromRetailer($productRetailer)
-            ->scrap($productRetailer);
+            ->createFromRetailer($this->productRetailer)
+            ->scrap($this->productRetailer);
 
-        $productRetailer->price = $data->getPrice();
-        $productRetailer->save();
+        $this->productRetailer->price = $data->getPrice();
+        $this->productRetailer->save();
 
-        if ($this->notify && $productRetailer->hasLowerPriceThan($bestRetailer)) {
-            $product->user->notify(new PriceDrop($productRetailer));
+        if ($this->notify && $this->productRetailer->hasLowerPriceThan($bestRetailer)) {
+            $product->user->notify(new PriceDrop($this->productRetailer));
         }
+    }
+
+    /**
+     * Calculate the number of seconds to wait before retrying the job.
+     */
+    public function backoff(): array
+    {
+        return [5, 10, 15];
     }
 }

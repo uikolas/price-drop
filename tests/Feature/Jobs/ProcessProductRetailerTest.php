@@ -6,12 +6,10 @@ namespace Tests\Feature\Jobs;
 
 use App\Client\HttpClientInterface;
 use App\Jobs\ProcessProductRetailer;
-use App\Models\Product;
 use App\Models\ProductRetailer;
 use App\Notifications\PriceDrop;
 use App\RetailerType;
 use App\Scraper\ScraperFactory;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
@@ -35,23 +33,13 @@ class ProcessProductRetailerTest extends TestCase
             ->once()
             ->andReturn($data);
 
-        $job = new ProcessProductRetailer($productRetailer->id);
+        $job = new ProcessProductRetailer($productRetailer);
         $job->handle($this->app->make(ScraperFactory::class));
 
         $updatedProductRetailer = $productRetailer->fresh();
 
         self::assertEquals('189.00', $updatedProductRetailer->price);
         self::assertEquals(RetailerType::MOBILI, $updatedProductRetailer->type);
-    }
-
-    public function test_throw_exception_if_model_not_found(): void
-    {
-        $this->expectException(ModelNotFoundException::class);
-
-        $productRetailer = new ProductRetailer();
-        $productRetailer->id = 123;
-
-        (new ProcessProductRetailer($productRetailer->id))->handle($this->app->make(ScraperFactory::class));
     }
 
     /**
@@ -82,7 +70,7 @@ class ProcessProductRetailerTest extends TestCase
             ->once()
             ->andReturn($data);
 
-        (new ProcessProductRetailer($productRetailer->id, true))->handle($this->app->make(ScraperFactory::class));
+        (new ProcessProductRetailer($productRetailer, true))->handle($this->app->make(ScraperFactory::class));
 
         $updatedProductRetailer = $productRetailer->fresh();
 

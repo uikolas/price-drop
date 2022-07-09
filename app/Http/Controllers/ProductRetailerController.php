@@ -30,7 +30,7 @@ class ProductRetailerController extends Controller
         $productRetailer = new ProductRetailer($request->all());
         $product->productRetailers()->save($productRetailer);
 
-        $this->dispatch(new ProcessProductRetailer($productRetailer->id));
+        $this->dispatch(new ProcessProductRetailer($productRetailer));
 
         return redirect()->route('products.show', [$product])->with('success', 'Product retailer added');
     }

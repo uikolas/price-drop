@@ -13,7 +13,7 @@ class TriggerProductRetailerUpdate extends Controller
     {
         $this->authorize('view', $retailer);
 
-        $this->dispatch(new ProcessProductRetailer($retailer->id));
+        $this->dispatch(new ProcessProductRetailer($retailer));
 
         return redirect()
             ->route('products.show', [$retailer->product])
