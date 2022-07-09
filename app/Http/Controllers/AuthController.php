@@ -10,7 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class LoginController extends Controller
+class AuthController extends Controller
 {
     public function show(): View
     {
@@ -33,5 +33,16 @@ class LoginController extends Controller
         return redirect()->to('/login')->withErrors([
             'name' => 'The provided credentials do not match our records.',
         ])->onlyInput('name');
+    }
+
+    public function logout(Request $request): RedirectResponse
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/');
     }
 }

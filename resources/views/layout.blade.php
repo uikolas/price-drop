@@ -11,9 +11,9 @@
             <a class="navbar-brand me-md-auto" href="{{ route('products.index') }}"><i class="bi bi-droplet-fill"></i> Price drop</a>
 
             <ul class="navbar-nav">
-                <li class="nav-item"><a href="{{ route('products.index') }}" class="nav-link">Products</a></li>
                 @auth
-                    <li class="nav-item"><a href="#" class="nav-link">Log out</a></li>
+                    <li class="nav-item"><a href="{{ route('products.index') }}" class="nav-link">Products</a></li>
+                    <li class="nav-item"><a href="{{ route('logout') }}" class="nav-link">Log out</a></li>
                 @endauth
             </ul>
         </div>

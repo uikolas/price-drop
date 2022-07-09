@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\LoginController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductRetailerController;
 use App\Http\Controllers\TriggerProductRetailerUpdate;
@@ -18,10 +18,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::get('/login', [LoginController::class, 'show'])->name('login');
-Route::post('/login', [LoginController::class, 'authenticate']);
+Route::get('/login', [AuthController::class, 'show'])->name('login');
+Route::post('/login', [AuthController::class, 'authenticate']);
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
     Route::get('/', [ProductController::class, 'index']);
     Route::resource('products', ProductController::class)->only(['index', 'create', 'store', 'show', 'destroy']);
     Route::resource('products.retailers', ProductRetailerController::class)
