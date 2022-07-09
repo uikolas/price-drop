@@ -8,8 +8,7 @@
         <div class="card-body">
             <h2 class="card-title">{{ $product->name }}</h2>
             @if ($bestRetailer)
-                <h5>Best retailer: <a href="{{ $bestRetailer->url }}"><strong>{{ $bestRetailer->type->name }}</strong></a></h5>
-                <h5>Best price: <strong>{{ $bestRetailer->price }}</strong></h5>
+                <h5>Best retailer: <a href="{{ $bestRetailer->url }}"><strong>{{ $bestRetailer->type->name }}</strong></a> with price: <strong>{{ $bestRetailer->price }} {{ $bestRetailer->currency }}</strong></h5>
             @endif
         </div>
     </div>
@@ -35,7 +34,7 @@
                         <tr>
                             <td><span class="badge text-bg-secondary">{{ $productRetailer->type->name }}</span></td>
                             <td><a href="{{ $productRetailer->url }}" target="_blank">{{ Str::limit($productRetailer->url, 50) }}</a></td>
-                            <td>{{ $productRetailer->price }}</td>
+                            <td>{{ $productRetailer->price }} {{ $productRetailer->currency }}</td>
                             <td>{{ $productRetailer->updated_at }}</td>
                             <td>
                                 <form action="{{ route('trigger', [$productRetailer]) }}" method="POST">

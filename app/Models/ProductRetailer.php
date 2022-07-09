@@ -30,6 +30,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|ProductRetailer whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ProductRetailer whereUrl($value)
  * @mixin \Eloquent
+ * @property string|null $currency
+ * @method static \Illuminate\Database\Eloquent\Builder|ProductRetailer whereCurrency($value)
  */
 class ProductRetailer extends Model
 {
