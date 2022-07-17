@@ -32,6 +32,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @mixin \Eloquent
  * @property string|null $currency
  * @method static \Illuminate\Database\Eloquent\Builder|ProductRetailer whereCurrency($value)
+ * @property string|null $image
+ * @method static \Illuminate\Database\Eloquent\Builder|ProductRetailer whereImage($value)
  */
 class ProductRetailer extends Model
 {

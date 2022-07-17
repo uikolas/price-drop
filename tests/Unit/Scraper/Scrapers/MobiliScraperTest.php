@@ -16,9 +16,11 @@ class MobiliScraperTest extends TestCase
 {
     use TestDataHelper;
 
-    public function testScrap(): void
+    /**
+     * @dataProvider scrapDataProvider
+     */
+    public function testScrap(string $data, ScrapData $expectedResult): void
     {
-        $data = $this->getTestData('mobili.txt');
         $client = $this->createMock(HttpClientInterface::class);
         $scraper = new MobiliScraper($client, new Crawler());
 
@@ -28,10 +30,23 @@ class MobiliScraperTest extends TestCase
             ->willReturn($data);
 
         self::assertEquals(
-            new ScrapData('189.00'),
+            $expectedResult,
             $scraper->scrap(
                 new ProductRetailer(['url' => 'http://temp'])
             )
         );
+    }
+
+    public function scrapDataProvider(): iterable
+    {
+        yield 'correct values' => [
+            $this->getTestData('mobili.txt'),
+            new ScrapData('189.00', 'EUR', 'https://www.mobili.lt/images/bigphones/nokia_nokia_g50_823045.png'),
+        ];
+
+        yield 'values not found' => [
+            '',
+            new ScrapData(null, 'EUR', null),
+        ];
     }
 }

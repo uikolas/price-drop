@@ -22,6 +22,6 @@ class AmazonScraper extends AbstractScraper
         $cleanPrice = $price->text();
         $cleanPrice = mb_substr($cleanPrice, 1);
 
-        return new ScrapData($cleanPrice);
+        return new ScrapData($cleanPrice, null, null);
     }
 }

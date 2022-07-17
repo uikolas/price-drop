@@ -16,9 +16,11 @@ class SkytechScraperTest extends TestCase
 {
     use TestDataHelper;
 
-    public function testScrap(): void
+    /**
+     * @dataProvider scrapDataProvider
+     */
+    public function testScrap(string $data, ScrapData $expectedResult): void
     {
-        $data = $this->getTestData('skytech.txt');
         $client = $this->createMock(HttpClientInterface::class);
         $scraper = new SkytechScraper($client, new Crawler());
 
@@ -28,10 +30,23 @@ class SkytechScraperTest extends TestCase
             ->willReturn($data);
 
         self::assertEquals(
-            new ScrapData('273.19'),
+            $expectedResult,
             $scraper->scrap(
                 new ProductRetailer(['url' => 'http://temp'])
             )
         );
+    }
+
+    public function scrapDataProvider(): iterable
+    {
+        yield 'correct values' => [
+            $this->getTestData('skytech.txt'),
+            new ScrapData('273.19', 'EUR', 'https://www.skytech.lt/images/medium/99/3086899.jpg'),
+        ];
+
+        yield 'values not found' => [
+            '',
+            new ScrapData(null, 'EUR', null),
+        ];
     }
 }

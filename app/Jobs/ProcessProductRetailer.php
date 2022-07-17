@@ -6,6 +6,7 @@ use App\Exceptions\ScraperNotFoundException;
 use App\Exceptions\ScrapingFailedException;
 use App\Models\ProductRetailer;
 use App\Notifications\PriceDrop;
+use App\Scraper\ScrapData;
 use App\Scraper\ScraperFactory;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -46,7 +47,8 @@ class ProcessProductRetailer implements ShouldQueue
             ->createFromRetailer($this->productRetailer)
             ->scrap($this->productRetailer);
 
-        $this->productRetailer->price = $data->getPrice();
+        $this->updateProductRetailer($this->productRetailer, $data);
+
         $this->productRetailer->save();
 
         if ($this->notify && $this->productRetailer->hasLowerPriceThan($bestRetailer)) {
@@ -60,5 +62,18 @@ class ProcessProductRetailer implements ShouldQueue
     public function backoff(): array
     {
         return [5, 10, 15];
+    }
+
+    private function updateProductRetailer(ProductRetailer $productRetailer, ScrapData $data): void
+    {
+        $productRetailer->price = $data->getPrice();
+
+        if ($data->getCurrency() !== null) {
+            $productRetailer->currency = $data->getCurrency();
+        }
+
+        if ($data->getImage() !== null) {
+            $productRetailer->image = $data->getImage();
+        }
     }
 }

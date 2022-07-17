@@ -39,6 +39,8 @@ class ProcessProductRetailerTest extends TestCase
         $updatedProductRetailer = $productRetailer->fresh();
 
         self::assertEquals('189.00', $updatedProductRetailer->price);
+        self::assertEquals('EUR', $updatedProductRetailer->currency);
+        self::assertEquals('https://www.mobili.lt/images/bigphones/nokia_nokia_g50_823045.png', $updatedProductRetailer->image);
         self::assertEquals(RetailerType::MOBILI, $updatedProductRetailer->type);
     }
 

@@ -13,6 +13,8 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class SkytechScraper extends AbstractScraper
 {
+    private const URL = 'https://www.skytech.lt';
+
     public function supports(ProductRetailer $productRetailer): bool
     {
         return $productRetailer->hasType(RetailerType::SKYTECH);
@@ -20,12 +22,33 @@ class SkytechScraper extends AbstractScraper
 
     protected function doScraping(Crawler $crawler): ScrapData
     {
-        $price = $crawler->filter('.num');
+        $price = $this->scrapPrice($crawler);
+        $image = $this->scrapImage($crawler);
 
-        $cleanPrice = explode('/', $price->text());
-        $cleanPrice = trim($cleanPrice[0]);
-        $cleanPrice = str_replace('€', '', $cleanPrice);
+        return new ScrapData($price, 'EUR', $image);
+    }
 
-        return new ScrapData($cleanPrice);
+    private function scrapPrice(Crawler $crawler): ?string
+    {
+        try {
+            $price = $crawler->filter('.num');
+
+            $cleanPrice = explode('/', $price->text());
+            $cleanPrice = trim($cleanPrice[0]);
+            return str_replace('€', '', $cleanPrice);
+        } catch (\InvalidArgumentException) {
+            return null;
+        }
+    }
+
+    private function scrapImage(Crawler $crawler): ?string
+    {
+        try {
+            $image = $crawler->filter('#main-product-image')->attr('src');
+
+            return self::URL. $image;
+        } catch (\InvalidArgumentException) {
+            return null;
+        }
     }
 }
