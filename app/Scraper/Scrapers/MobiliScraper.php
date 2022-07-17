@@ -18,11 +18,31 @@ class MobiliScraper extends AbstractScraper
 
     protected function doScraping(Crawler $crawler): ScrapData
     {
-        $price = $crawler->filter('.prices_full');
-        $cleanPrice = $price->text();
-        $cleanPrice = substr($cleanPrice, 0, -5);
-        $cleanPrice = str_replace(',', '.', $cleanPrice);
+        $price = $this->scrapPrice($crawler);
+        $image = $this->scrapImage($crawler);
 
-        return new ScrapData($cleanPrice);
+        return new ScrapData($price, 'EUR', $image);
+    }
+
+    private function scrapPrice(Crawler $crawler): ?string
+    {
+        try {
+            $price = $crawler->filter('.prices_full');
+            $cleanPrice = $price->text();
+            $cleanPrice = substr($cleanPrice, 0, -5);
+
+            return str_replace(',', '.', $cleanPrice);
+        } catch (\InvalidArgumentException) {
+            return null;
+        }
+    }
+
+    private function scrapImage(Crawler $crawler): ?string
+    {
+        try {
+            return $crawler->filter('#ti_img_kaina > img')->image()->getUri();
+        } catch (\InvalidArgumentException) {
+            return null;
+        }
     }
 }

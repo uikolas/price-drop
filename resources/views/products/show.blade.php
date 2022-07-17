@@ -4,19 +4,29 @@
 
 @section('content')
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <h2 class="card-title">{{ $product->name }}</h2>
-            @if ($bestRetailer)
-                <h5>Best retailer: <a href="{{ $bestRetailer->url }}"><strong>{{ $bestRetailer->type->name }}</strong></a> with price: <strong>{{ $bestRetailer->price }} {{ $bestRetailer->currency }}</strong></h5>
-            @endif
+    <div class="card shadow-sm mb-3">
+        <div class="row g-0">
+            <div class="col-md-4" style="max-width: 140px;">
+                @isset($bestRetailer->image)
+                    <img src="{{ $bestRetailer->image }}" class="img-fluid rounded-start" alt="product image" />
+                @endisset
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h2 class="card-title">{{ $product->name }}</h2>
+                    @if ($bestRetailer)
+                        <h6>Best retailer: <a href="{{ $bestRetailer->url }}" target="_blank"><strong>{{ $bestRetailer->type->name }}</strong></a> with price: <strong>{{ $bestRetailer->price }} {{ $bestRetailer->currency }}</strong></h6>
+                        <h6>Last update: {{ $bestRetailer->updated_at->diffForHumans() }}</h6>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="pt-2">
         <div class="card shadow-sm">
             <div class="card-body">
-                <h2 class="card-title">Product retailers</h2>
+                <h2 class="card-title">Retailers</h2>
 
                 <table class="table table-hover">
                     <thead class="table-dark">
@@ -35,7 +45,7 @@
                             <td><span class="badge text-bg-secondary">{{ $productRetailer->type->name }}</span></td>
                             <td><a href="{{ $productRetailer->url }}" target="_blank">{{ Str::limit($productRetailer->url, 50) }}</a></td>
                             <td>{{ $productRetailer->price }} {{ $productRetailer->currency }}</td>
-                            <td>{{ $productRetailer->updated_at }}</td>
+                            <td>{{ $productRetailer->updated_at->diffForHumans() }}</td>
                             <td>
                                 <form action="{{ route('trigger', [$productRetailer]) }}" method="POST">
                                     <button type="submit" value="t" class="btn btn-primary btn-sm" ><i class="bi bi-arrow-clockwise"></i></button>
@@ -66,7 +76,7 @@
     <div></div>
 
 
-    <div class="pt-2">
+    <div class="pt-2 float-end">
         <form action="{{ route('products.destroy', [$product]) }}" method="POST">
             @method('DELETE')
             <input type="submit" value="Remove product" class="btn btn-danger btn-sm" />

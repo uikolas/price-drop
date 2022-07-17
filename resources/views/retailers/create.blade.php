@@ -34,7 +34,7 @@
                             <option value="{{ $type->value }}">{{ $type->name }}</option>
                         @endforeach
                     </select>
-                    <label for="floatingSelect">Type</label>
+                    <label for="floatingSelect">Retailer</label>
                     @error('type')
                     <div class="invalid-feedback">
                         {{ $message }}

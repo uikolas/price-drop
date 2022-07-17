@@ -28,7 +28,7 @@ class AmazonScraperTest extends TestCase
             ->willReturn($data);
 
         self::assertEquals(
-            new ScrapData('48.56'),
+            new ScrapData('48.56', null, null),
             $scraper->scrap(
                 new ProductRetailer(['url' => 'http://temp'])
             )
