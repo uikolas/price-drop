@@ -26,7 +26,7 @@
     <div class="pt-2">
         <div class="card shadow-sm">
             <div class="card-body">
-                <h2 class="card-title">Product retailers</h2>
+                <h2 class="card-title">Retailers</h2>
 
                 <table class="table table-hover">
                     <thead class="table-dark">
