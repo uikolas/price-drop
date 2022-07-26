@@ -33,10 +33,9 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-
 //Route::get('/notification', function () {
-//    $invoice = \App\Models\ProductRetailer::find(1);
+//    $productRetailer = \App\Models\ProductRetailer::find(1);
 //
-//    return (new \App\Notifications\PriceDrop($invoice))
-//        ->toMail($invoice->product->user);
+//    return (new \App\Notifications\PriceDrop($productRetailer))
+//        ->toMail($productRetailer->product->user);
 //});
