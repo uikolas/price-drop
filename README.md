@@ -12,6 +12,9 @@ After running docker with sail you can run:
 * `php artisan db:seed --class=UserSeeder`
 * open website and login (login info is inside `\Database\Seeders\UserSeeder`)
 
+## Images
+[Go here](/resources/docs/Overview.md)
+
 ## How to update prices?
 To update prices for all retailers just run (also this command sends notification if price was dropped):
 
@@ -27,6 +30,3 @@ After running command. It will create queue jobs which later needs to be handled
 1. Create a new class inside `App\Scraper\Scrapers` which implements `\App\Scraper\ScraperInterface` interface.
 2. Register new scraper class inside `\App\Providers\ScraperProvider::$scrapers`
 3. Add test case inside `Tests\Unit\Scraper\Scrapers`
-
-## Images
-[Go here](/resources/docs/Overview.md)
