@@ -14,7 +14,7 @@ return new class extends Migration
             $table->text('url');
             $table->string('price')->nullable();
             $table->string('type');
-            $table->foreignIdFor(Product::class)->constrained();
+            $table->foreignIdFor(Product::class)->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
