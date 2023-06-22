@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Client\HttpClientInterface;
 use App\Client\GuzzleHttpClient;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -30,8 +31,12 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(UrlGenerator $url)
     {
         Paginator::useBootstrapFive();
+
+        if (env('APP_ENV') == 'staging') {
+            $url->forceScheme('https');
+        }
     }
 }
