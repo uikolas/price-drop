@@ -57,13 +57,15 @@ class ProcessProductRetailerTest extends TestCase
         $productRetailer = ProductRetailer::factory()
             ->for($product)
             ->type(RetailerType::MOBILI)
-            ->create(['price' => $currentPrice]);
+            ->price($currentPrice)
+            ->create();
 
         foreach ($retailers as $retailer) {
             ProductRetailer::factory()
                 ->for($product)
                 ->type($retailer['type'])
-                ->create(['price' => $retailer['price']]);
+                ->price($retailer['price'])
+                ->create();
         }
 
         $client = $this->mock(HttpClientInterface::class);

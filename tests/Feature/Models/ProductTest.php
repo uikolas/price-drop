@@ -27,17 +27,17 @@ class ProductTest extends TestCase
         ProductRetailer::factory()
             ->for($product)
             ->type(RetailerType::MOBILI)
-            ->price('1499.00')
+            ->price('760.00')
             ->create();
 
         ProductRetailer::factory()
             ->for($product)
             ->type(RetailerType::AMAZON)
-            ->price('760.00')
+            ->price('1499.00')
             ->create();
 
         $bestRetailer = $product->bestRetailer();
         self::assertSame('760.00',  $bestRetailer->price);
-        self::assertTrue($bestRetailer->hasType(RetailerType::AMAZON));
+        self::assertTrue($bestRetailer->hasType(RetailerType::MOBILI));
     }
 }

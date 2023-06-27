@@ -18,11 +18,13 @@ class ProductRetailerTest extends TestCase
         /** @var ProductRetailer $productRetailer */
         $productRetailer = ProductRetailer::factory()
             ->type(RetailerType::SKYTECH)
-            ->create(['price' => '99.97']);
+            ->price('99.97')
+            ->create();
 
         $bestProductRetailer = ProductRetailer::factory()
             ->type(RetailerType::MOBILI)
-            ->create(['price' => '99.98']);
+            ->price('99.98')
+            ->create();
 
         self::assertTrue(
             $productRetailer->hasLowerPriceThan($bestProductRetailer)
@@ -34,7 +36,8 @@ class ProductRetailerTest extends TestCase
         /** @var ProductRetailer $productRetailer */
         $productRetailer = ProductRetailer::factory()
             ->type(RetailerType::SKYTECH)
-            ->create(['price' => '99.97']);
+            ->price('99.97')
+            ->create();
 
         self::assertTrue(
             $productRetailer->hasLowerPriceThan(null)
@@ -50,7 +53,8 @@ class ProductRetailerTest extends TestCase
 
         $bestProductRetailer = ProductRetailer::factory()
             ->type(RetailerType::MOBILI)
-            ->create(['price' => '99.98']);
+            ->price('99.98')
+            ->create();
 
         self::assertFalse(
             $productRetailer->hasLowerPriceThan($bestProductRetailer)
