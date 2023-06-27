@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Models;
+namespace Tests\Feature\Models;
 
 use App\Models\Product;
 use App\Models\ProductRetailer;
@@ -27,15 +27,17 @@ class ProductTest extends TestCase
         ProductRetailer::factory()
             ->for($product)
             ->type(RetailerType::MOBILI)
-            ->create(['price' => '99.98']);
+            ->price('1499.00')
+            ->create();
 
         ProductRetailer::factory()
             ->for($product)
             ->type(RetailerType::AMAZON)
-            ->create(['price' => '99.99']);
+            ->price('760.00')
+            ->create();
 
         $bestRetailer = $product->bestRetailer();
-        self::assertSame('99.98',  $bestRetailer->price);
-        self::assertTrue($bestRetailer->hasType(RetailerType::MOBILI));
+        self::assertSame('760.00',  $bestRetailer->price);
+        self::assertTrue($bestRetailer->hasType(RetailerType::AMAZON));
     }
 }

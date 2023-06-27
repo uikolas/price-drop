@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Client;
+namespace Tests\Unit\Client;
 
 use App\Client\GuzzleHttpClient;
 use App\Exceptions\FailedHttpRequestException;

@@ -41,6 +41,7 @@ class ProductRetailer extends Model
 
     protected $casts = [
         'type' => RetailerType::class,
+        'price' => 'decimal:2',
     ];
 
     protected $fillable = [

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Scraper\Scrapers;
+namespace Tests\Unit\Scraper\Scrapers;
 
 use App\Client\HttpClientInterface;
 use App\Models\ProductRetailer;

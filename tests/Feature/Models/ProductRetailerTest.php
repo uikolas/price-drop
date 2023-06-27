@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Models;
+namespace Tests\Feature\Models;
 
 use App\Models\ProductRetailer;
 use App\RetailerType;

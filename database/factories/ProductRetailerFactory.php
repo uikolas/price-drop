@@ -33,4 +33,13 @@ class ProductRetailerFactory extends Factory
             ];
         });
     }
+
+    public function price(string $price)
+    {
+        return $this->state(function (array $attributes) use ($price) {
+            return [
+                'price' => $price,
+            ];
+        });
+    }
 }

@@ -12,7 +12,7 @@ return new class extends Migration
         Schema::create('product_retailers', function (Blueprint $table) {
             $table->id();
             $table->text('url');
-            $table->string('price')->nullable();
+            $table->decimal('price')->nullable();
             $table->string('type');
             $table->foreignIdFor(Product::class)->constrained()->cascadeOnDelete();
             $table->timestamps();
