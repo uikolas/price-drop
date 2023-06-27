@@ -8,6 +8,7 @@ use App\Models\ProductRetailer;
 use App\Notifications\PriceDrop;
 use App\Scraper\ScrapData;
 use App\Scraper\ScraperFactory;
+use App\Services\ProductRetailerProcessor;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -38,22 +39,9 @@ class ProcessProductRetailer implements ShouldQueue
     /**
      * @throws ScraperNotFoundException|ScrapingFailedException
      */
-    public function handle(ScraperFactory $scraperFactory): void
+    public function handle(ProductRetailerProcessor $productRetailerProcessor): void
     {
-        $product = $this->productRetailer->product;
-        $bestRetailer = $product->bestRetailer();
-
-        $data = $scraperFactory
-            ->createFromRetailer($this->productRetailer)
-            ->scrap($this->productRetailer);
-
-        $this->updateProductRetailer($this->productRetailer, $data);
-
-        $this->productRetailer->save();
-
-        if ($this->notify && $this->productRetailer->hasLowerPriceThan($bestRetailer)) {
-            $product->user->notify(new PriceDrop($this->productRetailer));
-        }
+        $productRetailerProcessor->process($this->productRetailer, $this->notify);
     }
 
     /**
@@ -62,18 +50,5 @@ class ProcessProductRetailer implements ShouldQueue
     public function backoff(): array
     {
         return [5, 10, 15];
-    }
-
-    private function updateProductRetailer(ProductRetailer $productRetailer, ScrapData $data): void
-    {
-        $productRetailer->price = $data->getPrice();
-
-        if ($data->getCurrency() !== null) {
-            $productRetailer->currency = $data->getCurrency();
-        }
-
-        if ($data->getImage() !== null) {
-            $productRetailer->image = $data->getImage();
-        }
     }
 }

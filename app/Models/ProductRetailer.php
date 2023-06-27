@@ -58,17 +58,4 @@ class ProductRetailer extends Model
     {
         return $this->type === $retailerType;
     }
-
-    public function hasLowerPriceThan(?ProductRetailer $otherProductRetailer): bool
-    {
-        if ($otherProductRetailer === null) {
-            return true;
-        }
-
-        if ($this->price === null) {
-            return false;
-        }
-
-        return \bccomp($this->price, $otherProductRetailer->price, 2) === -1;
-    }
 }

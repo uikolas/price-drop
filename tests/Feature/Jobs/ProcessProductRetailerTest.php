@@ -10,6 +10,7 @@ use App\Models\ProductRetailer;
 use App\Notifications\PriceDrop;
 use App\RetailerType;
 use App\Scraper\ScraperFactory;
+use App\Services\ProductRetailerProcessor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
@@ -34,7 +35,7 @@ class ProcessProductRetailerTest extends TestCase
             ->andReturn($data);
 
         $job = new ProcessProductRetailer($productRetailer);
-        $job->handle($this->app->make(ScraperFactory::class));
+        $job->handle($this->app->make(ProductRetailerProcessor::class));
 
         $updatedProductRetailer = $productRetailer->fresh();
 
@@ -74,7 +75,7 @@ class ProcessProductRetailerTest extends TestCase
             ->once()
             ->andReturn($data);
 
-        (new ProcessProductRetailer($productRetailer, true))->handle($this->app->make(ScraperFactory::class));
+        (new ProcessProductRetailer($productRetailer, true))->handle($this->app->make(ProductRetailerProcessor::class));
 
         $updatedProductRetailer = $productRetailer->fresh();
 
