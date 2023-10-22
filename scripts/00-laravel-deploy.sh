@@ -17,11 +17,7 @@ php artisan route:cache
 echo "Running migrations..."
 php artisan migrate --force
 
-#echo "Create user"
-#php artisan db:seed --class=UserSeeder --force
+echo "Create user"
+php artisan db:seed --class=UserSeeder --force
 
-echo "done deploying"
-
-
-#echo "run queue"
-#php artisan queue:listen &
+echo "Done deploying"
