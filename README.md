@@ -1,5 +1,5 @@
 # :droplet: Price drop
-Price drop is a small app which allows tracking prices of added products and get email notification about price drop. Written with Laravel 9.
+Price drop is a small app which allows tracking prices of added products and get email notification about price drop. Written with Laravel 10.
 
 ## Installation
 To run project locally it's recommended to install docker and use  [Laravel Sail](https://laravel.com/docs/10.x/sail#installing-composer-dependencies-for-existing-projects).
