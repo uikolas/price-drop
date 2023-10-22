@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Product;
 
 use App\Exceptions\ScraperNotFoundException;
 use App\Exceptions\ScrapingFailedException;
@@ -16,7 +16,6 @@ class ProductRetailerProcessor
 {
     public function __construct(
         private readonly ScraperFactory $scraperFactory,
-        private readonly ProductRetailerComparator $productRetailerComparator,
         private readonly NotificationDispatcher $notification,
     ) {
     }
@@ -35,7 +34,7 @@ class ProductRetailerProcessor
 
         $this->updateProductRetailer($productRetailer, $data);
 
-        if ($notify && $this->productRetailerComparator->isPriceLessThan($productRetailer, $bestRetailer)) {
+        if ($notify && $productRetailer->hasLowerPriceThan($bestRetailer)) {
             $this->notification->send($product->user, new PriceDrop($productRetailer));
         }
     }

@@ -10,7 +10,7 @@ use App\Models\ProductRetailer;
 use App\Notifications\PriceDrop;
 use App\RetailerType;
 use App\Scraper\ScraperFactory;
-use App\Services\ProductRetailerProcessor;
+use App\Product\ProductRetailerProcessor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
