@@ -12,6 +12,7 @@ use App\RetailerType;
 use App\Scraper\ScraperFactory;
 use App\Product\ProductRetailerProcessor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 use Tests\TestDataHelper;
@@ -22,6 +23,8 @@ class ProcessProductRetailerTest extends TestCase
 
     public function test_success_handle(): void
     {
+        $now = Carbon::create(2021, 5, 21);
+        Carbon::setTestNow($now);
         $data = $this->getTestData('mobili.txt');
 
         $productRetailer = ProductRetailer::factory()
@@ -43,6 +46,34 @@ class ProcessProductRetailerTest extends TestCase
         self::assertEquals('EUR', $updatedProductRetailer->currency);
         self::assertEquals('https://www.mobili.lt/images/bigphones/nokia_nokia_g50_823045.png', $updatedProductRetailer->image);
         self::assertEquals(RetailerType::MOBILI, $updatedProductRetailer->type);
+        self::assertEquals($now, $updatedProductRetailer->price_updated_at);
+    }
+
+    public function test_do_not_update_if_price_was_not_changed(): void
+    {
+        Carbon::setTestNow(Carbon::create(2021, 5, 21));
+        $data = $this->getTestData('mobili.txt');
+
+        $productRetailer = ProductRetailer::factory()
+            ->type(RetailerType::MOBILI)
+            ->price('189.00')
+            ->priceUpdatedAt(Carbon::create(2020, 1, 10))
+            ->create();
+
+        $client = $this->mock(HttpClientInterface::class);
+        $client->shouldReceive('get')
+            ->with($productRetailer->url)
+            ->once()
+            ->andReturn($data);
+
+        $job = new ProcessProductRetailer($productRetailer);
+        $job->handle($this->app->make(ProductRetailerProcessor::class));
+
+        $updatedProductRetailer = $productRetailer->fresh();
+
+        self::assertEquals('189.00', $updatedProductRetailer->price);
+        self::assertEquals(RetailerType::MOBILI, $updatedProductRetailer->type);
+        self::assertEquals(Carbon::create(2020, 1, 10), $updatedProductRetailer->price_updated_at);
     }
 
     /**

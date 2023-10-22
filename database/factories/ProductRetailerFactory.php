@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Product;
 use App\RetailerType;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Carbon;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProductRetailer>
@@ -42,4 +43,14 @@ class ProductRetailerFactory extends Factory
             ];
         });
     }
+
+    public function priceUpdatedAt(Carbon $date): static
+    {
+        return $this->state(function (array $attributes) use ($date) {
+            return [
+                'price_updated_at' => $date,
+            ];
+        });
+    }
+
 }
