@@ -14,7 +14,7 @@ class ScraperProvider extends ServiceProvider
     private const TAG_SCRAPERS = 'scrapers';
 
     /**
-     * @var string[]
+     * @var array<class-string>
      */
     private array $scrapers = [
         MobiliScraper::class,

@@ -16,7 +16,7 @@ class ProductRetailerFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'product_id' => Product::factory(),
@@ -25,7 +25,7 @@ class ProductRetailerFactory extends Factory
         ];
     }
 
-    public function type(RetailerType $type)
+    public function type(RetailerType $type): static
     {
         return $this->state(function (array $attributes) use ($type) {
             return [
@@ -34,7 +34,7 @@ class ProductRetailerFactory extends Factory
         });
     }
 
-    public function price(string $price)
+    public function price(string $price): static
     {
         return $this->state(function (array $attributes) use ($price) {
             return [
