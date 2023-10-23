@@ -9,4 +9,6 @@ enum RetailerType: string
     case SKYTECH = 'skytech';
     case MOBILI = 'mobili';
     case AMAZON = 'amazon';
+    case G2A = 'g2a';
+    case ENEBA = 'eneba';
 }
