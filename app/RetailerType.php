@@ -10,4 +10,5 @@ enum RetailerType: string
     case MOBILI = 'mobili';
     case AMAZON = 'amazon';
     case G2A = 'g2a';
+    case ENEBA = 'eneba';
 }

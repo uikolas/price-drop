@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Scraper\ScraperFactory;
 use App\Scraper\Scrapers\AmazonScraper;
+use App\Scraper\Scrapers\EnebaScraper;
+use App\Scraper\Scrapers\G2AScraper;
 use App\Scraper\Scrapers\MobiliScraper;
 use App\Scraper\Scrapers\SkytechScraper;
 use Illuminate\Contracts\Container\Container;
@@ -20,6 +22,8 @@ class ScraperProvider extends ServiceProvider
         MobiliScraper::class,
         SkytechScraper::class,
         AmazonScraper::class,
+        G2AScraper::class,
+        EnebaScraper::class,
     ];
 
     public function register(): void
