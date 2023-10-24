@@ -30,7 +30,7 @@ class G2AScraper implements ScraperInterface
     {
         try {
             $response = $this->client->get(
-                \sprintf('%s?___currency=AED&___locale=en', $productRetailer->url)
+                \sprintf('%s?___currency=EUR&___locale=en', $productRetailer->url)
             );
             $this->crawler->addHtmlContent($response);
 
