@@ -14,21 +14,17 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Log\LoggerInterface;
 
 class GuzzleHttpClientTest extends TestCase
 {
     private Client&MockObject $client;
-
-    private LoggerInterface&MockObject $logger;
 
     private GuzzleHttpClient $httpClient;
 
     protected function setUp(): void
     {
         $this->client = $this->createMock(Client::class);
-        $this->logger = $this->createMock(LoggerInterface::class);
-        $this->httpClient = new GuzzleHttpClient($this->client, $this->logger);
+        $this->httpClient = new GuzzleHttpClient($this->client);
     }
 
 
@@ -41,6 +37,8 @@ class GuzzleHttpClientTest extends TestCase
                 [
                     'headers' => [
                         'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:100.0) Gecko/20100101 Firefox/100.0',
+                        'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+                        'Accept-Encoding' => 'gzip, deflate, br',
                     ]
                 ]
             )
@@ -55,7 +53,7 @@ class GuzzleHttpClientTest extends TestCase
     public function testCatchAndThrowException(): void
     {
         $this->expectExceptionObject(
-            FailedHttpRequestException::create('url')
+            FailedHttpRequestException::create('url', 0)
         );
 
         $this->client->expects(self::once())
@@ -65,6 +63,8 @@ class GuzzleHttpClientTest extends TestCase
                 [
                     'headers' => [
                         'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:100.0) Gecko/20100101 Firefox/100.0',
+                        'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+                        'Accept-Encoding' => 'gzip, deflate, br',
                     ]
                 ]
             )
@@ -75,8 +75,6 @@ class GuzzleHttpClientTest extends TestCase
                     $this->createMock(ResponseInterface::class)
                 )
             );
-
-        $this->logger->expects(self::once())->method('error');
 
         $this->httpClient->get('url');
     }

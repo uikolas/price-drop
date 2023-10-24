@@ -7,13 +7,11 @@ namespace App\Client;
 use App\Exceptions\FailedHttpRequestException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Psr\Log\LoggerInterface;
 
 class GuzzleHttpClient implements HttpClientInterface
 {
     public function __construct(
         private readonly Client $client,
-        private readonly LoggerInterface $logger
     ) {
     }
 
@@ -27,16 +25,10 @@ class GuzzleHttpClient implements HttpClientInterface
                 ]
             );
         } catch (GuzzleException $exception) {
-            $this->logger->error(
-                'Failed http call',
-                [
-                    'url' => $url,
-                    'status' => $exception->getCode(),
-                    'exception' => $exception,
-                ]
+            throw FailedHttpRequestException::create(
+                $url,
+                $exception->getCode(),
             );
-
-            throw FailedHttpRequestException::create($url);
         }
 
         return $response->getBody()->getContents();
@@ -49,6 +41,8 @@ class GuzzleHttpClient implements HttpClientInterface
     {
         return [
             'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:100.0) Gecko/20100101 Firefox/100.0',
+            'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Encoding' => 'gzip, deflate, br',
         ];
     }
 }

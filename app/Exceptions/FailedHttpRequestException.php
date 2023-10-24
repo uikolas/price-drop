@@ -6,10 +6,11 @@ namespace App\Exceptions;
 
 class FailedHttpRequestException extends \Exception
 {
-    public static function create(string $url): self
+    public static function create(string $url, int $statusCode): self
     {
         return new self(
-            \sprintf('Failed http call to %s', $url)
+            \sprintf('Failed http call to: %s with status code: %d', $url, $statusCode),
+            $statusCode,
         );
     }
 }
