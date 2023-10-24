@@ -27,7 +27,7 @@ class G2AScraperTest extends TestCase
 
         $client->expects(self::once())
             ->method('get')
-            ->with('http://temp?___currency=AED&___locale=en')
+            ->with('http://temp?___currency=EUR&___locale=en')
             ->willReturn($data);
 
         self::assertEquals(
