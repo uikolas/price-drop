@@ -31,7 +31,7 @@ class EnebaScraper extends AbstractScraper
             $cleanPrice = $price->text();
             $cleanPrice = \trim(\mb_substr($cleanPrice, 0, -2));
 
-            return str_replace(',', '.', $cleanPrice);
+            return \str_replace(',', '.', $cleanPrice);
         } catch (\InvalidArgumentException) {
             return null;
         }

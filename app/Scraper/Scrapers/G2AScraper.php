@@ -54,7 +54,7 @@ class G2AScraper implements ScraperInterface
             $price = $crawler->filter('[data-locator="zth-price"]');
             $cleanPrice = $price->text();
 
-            return substr($cleanPrice, 4);
+            return \trim(\mb_substr($cleanPrice, 1));
         } catch (\InvalidArgumentException) {
             return null;
         }

@@ -20,7 +20,7 @@ class AmazonScraper extends AbstractScraper
     {
         $price = $crawler->filter('.price');
         $cleanPrice = $price->text();
-        $cleanPrice = mb_substr($cleanPrice, 1);
+        $cleanPrice = \mb_substr($cleanPrice, 1);
 
         return new ScrapData($cleanPrice, null, null);
     }

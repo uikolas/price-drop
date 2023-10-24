@@ -32,10 +32,9 @@ class SkytechScraper extends AbstractScraper
     {
         try {
             $price = $crawler->filter('.num');
+            $cleanPrice = $price->text();
 
-            $cleanPrice = explode('/', $price->text());
-            $cleanPrice = trim($cleanPrice[0]);
-            return str_replace('€', '', $cleanPrice);
+            return \mb_substr($cleanPrice, 0, -1);
         } catch (\InvalidArgumentException) {
             return null;
         }

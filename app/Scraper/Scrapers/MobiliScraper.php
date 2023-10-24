@@ -29,9 +29,9 @@ class MobiliScraper extends AbstractScraper
         try {
             $price = $crawler->filter('.prices_full');
             $cleanPrice = $price->text();
-            $cleanPrice = substr($cleanPrice, 0, -5);
+            $cleanPrice = \mb_substr($cleanPrice, 0, -2);
 
-            return str_replace(',', '.', $cleanPrice);
+            return \str_replace(',', '.', $cleanPrice);
         } catch (\InvalidArgumentException) {
             return null;
         }

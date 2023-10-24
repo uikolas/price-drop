@@ -42,7 +42,7 @@ class G2AScraperTest extends TestCase
     {
         yield 'correct values' => [
             $this->getTestData('g2a.txt'),
-            new ScrapData('33.30', 'EUR', 'https://images.g2a.com/360x600/1x1x1/cities-skylines-ii-pc-steam-key-global-i10000339650001/4f031a3215f149bda055853d'),
+            new ScrapData('6.84', 'EUR', 'https://images.g2a.com/360x600/1x1x1/xbox-game-pass-ultimate-1-month-xbox-live-key-united-states-i10000188766014/5d08a7ed7e696c5c4d7df022'),
         ];
 
         yield 'values not found' => [
