@@ -22,6 +22,7 @@ class GuzzleHttpClient implements HttpClientInterface
                 $url,
                 [
                     'headers' => $this->getHeaders(),
+                    'timeout' => 10,
                 ]
             );
         } catch (GuzzleException $exception) {

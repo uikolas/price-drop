@@ -8,7 +8,6 @@ use App\Client\GuzzleHttpClient;
 use App\Exceptions\FailedHttpRequestException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -39,7 +38,8 @@ class GuzzleHttpClientTest extends TestCase
                         'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:100.0) Gecko/20100101 Firefox/100.0',
                         'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
                         'Accept-Encoding' => 'gzip, deflate, br',
-                    ]
+                    ],
+                    'timeout' => 10,
                 ]
             )
             ->willReturn(new Response(body: 'response'));
@@ -65,7 +65,8 @@ class GuzzleHttpClientTest extends TestCase
                         'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:100.0) Gecko/20100101 Firefox/100.0',
                         'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
                         'Accept-Encoding' => 'gzip, deflate, br',
-                    ]
+                    ],
+                    'timeout' => 10,
                 ]
             )
             ->willThrowException(
