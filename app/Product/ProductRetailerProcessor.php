@@ -17,6 +17,7 @@ class ProductRetailerProcessor
     public function __construct(
         private readonly ScraperFactory $scraperFactory,
         private readonly NotificationDispatcher $notification,
+        private readonly PriceComparator $priceComparator,
     ) {
     }
 
@@ -34,14 +35,17 @@ class ProductRetailerProcessor
 
         $this->updateProductRetailer($productRetailer, $data);
 
-        if ($notify && $productRetailer->hasLowerPriceThan($bestRetailer)) {
+        if ($notify && $this->priceComparator->isPriceLessThanAnother($productRetailer->price, $bestRetailer?->price)) {
             $this->notification->send($product->user, new PriceDrop($productRetailer));
         }
     }
 
     private function updateProductRetailer(ProductRetailer $productRetailer, ScrapData $data): void
     {
-        $productRetailer->price = $data->getPrice();
+        if (!$this->priceComparator->arePricesEqual($productRetailer->price, $data->getPrice())) {
+            $productRetailer->price = $data->getPrice();
+            $productRetailer->price_updated_at = now();
+        }
 
         if ($data->getCurrency() !== null) {
             $productRetailer->currency = $data->getCurrency();

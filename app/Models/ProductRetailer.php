@@ -29,11 +29,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|ProductRetailer whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ProductRetailer whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ProductRetailer whereUrl($value)
- * @mixin \Eloquent
  * @property string|null $currency
  * @method static \Illuminate\Database\Eloquent\Builder|ProductRetailer whereCurrency($value)
  * @property string|null $image
  * @method static \Illuminate\Database\Eloquent\Builder|ProductRetailer whereImage($value)
+ * @property \Illuminate\Support\Carbon|null $price_updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|ProductRetailer wherePriceUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class ProductRetailer extends Model
 {
@@ -42,6 +44,7 @@ class ProductRetailer extends Model
     protected $casts = [
         'type' => RetailerType::class,
         'price' => 'decimal:2',
+        'price_updated_at' => 'datetime',
     ];
 
     protected $fillable = [
@@ -57,18 +60,5 @@ class ProductRetailer extends Model
     public function hasType(RetailerType $retailerType): bool
     {
         return $this->type === $retailerType;
-    }
-
-    public function hasLowerPriceThan(?ProductRetailer $otherProductRetailer): bool
-    {
-        if ($otherProductRetailer === null) {
-            return true;
-        }
-
-        if ($this->price === null) {
-            return false;
-        }
-
-        return \bccomp($this->price, $otherProductRetailer->price, 2) === -1;
     }
 }

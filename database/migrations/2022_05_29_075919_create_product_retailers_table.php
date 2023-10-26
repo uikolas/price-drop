@@ -13,6 +13,7 @@ return new class extends Migration
             $table->id();
             $table->text('url');
             $table->decimal('price')->nullable();
+            $table->dateTime('price_updated_at')->nullable();
             $table->string('type');
             $table->foreignIdFor(Product::class)->constrained()->cascadeOnDelete();
             $table->timestamps();

@@ -45,7 +45,7 @@
                             <td><span class="badge text-bg-secondary">{{ $productRetailer->type->name }}</span></td>
                             <td><a href="{{ $productRetailer->url }}" target="_blank">{{ Str::limit($productRetailer->url, 50) }}</a></td>
                             <td>{{ $productRetailer->price }} {{ $productRetailer->currency }}</td>
-                            <td>{{ $productRetailer->updated_at->diffForHumans() }}</td>
+                            <td>{{ $productRetailer->price_updated_at?->diffForHumans() }}</td>
                             <td>
                                 <form action="{{ route('trigger', [$productRetailer]) }}" method="POST">
                                     <button type="submit" value="t" class="btn btn-primary btn-sm" ><i class="bi bi-arrow-clockwise"></i></button>
