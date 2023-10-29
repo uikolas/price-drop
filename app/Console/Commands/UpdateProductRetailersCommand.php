@@ -27,7 +27,7 @@ class UpdateProductRetailersCommand extends Command
 
         /** @var ProductRetailer $productRetailer */
         foreach (ProductRetailer::lazy() as $productRetailer) {
-            $this->dispatch(new ProcessProductRetailer($productRetailer->id, true));
+            $this->dispatch(new ProcessProductRetailer($productRetailer, true));
             $bar->advance();
         }
 

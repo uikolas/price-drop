@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Jobs\ProcessProductRetailer;
-use App\Models\Product;
 use App\Models\ProductRetailer;
 use App\RetailerType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
