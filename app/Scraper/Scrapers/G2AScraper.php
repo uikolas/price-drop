@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Scraper\Scrapers;
 
 use App\Client\HttpClientInterface;
-use App\Exceptions\FailedHttpRequestException;
 use App\Exceptions\ScrapingFailedException;
 use App\Models\ProductRetailer;
 use App\RetailerType;
@@ -35,8 +34,8 @@ class G2AScraper implements ScraperInterface
             $this->crawler->addHtmlContent($response);
 
             return $this->doScraping($this->crawler);
-        } catch (FailedHttpRequestException | \InvalidArgumentException $exception) {
-            throw new ScrapingFailedException('Failed to scrap data!', 0, $exception);
+        } catch (\InvalidArgumentException $exception) {
+            throw ScrapingFailedException::create($exception);
         }
     }
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature;
+namespace Tests\Feature\Console\Commands;
 
 use App\Jobs\ProcessProductRetailer;
 use App\Models\ProductRetailer;

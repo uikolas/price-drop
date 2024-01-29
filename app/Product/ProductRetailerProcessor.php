@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Product;
 
+use App\Exceptions\FailedHttpRequestException;
 use App\Exceptions\ScraperNotFoundException;
 use App\Exceptions\ScrapingFailedException;
 use App\Models\ProductRetailer;
@@ -22,7 +23,7 @@ class ProductRetailerProcessor
     }
 
     /**
-     * @throws ScraperNotFoundException|ScrapingFailedException
+     * @throws ScraperNotFoundException|ScrapingFailedException|FailedHttpRequestException
      */
     public function process(ProductRetailer $productRetailer, bool $notify): void
     {
