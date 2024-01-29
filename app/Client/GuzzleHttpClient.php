@@ -7,6 +7,7 @@ namespace App\Client;
 use App\Exceptions\FailedHttpRequestException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Symfony\Component\HttpFoundation\Response;
 
 class GuzzleHttpClient implements HttpClientInterface
 {
@@ -23,13 +24,18 @@ class GuzzleHttpClient implements HttpClientInterface
                 [
                     'headers' => $this->getHeaders(),
                     'timeout' => 10,
+                    'http_errors' => false,
+                    'allow_redirects' => true,
                 ]
             );
         } catch (GuzzleException $exception) {
-            throw FailedHttpRequestException::create(
-                $url,
-                $exception->getCode(),
-            );
+            throw FailedHttpRequestException::create($url, $exception->getCode());
+        }
+
+        $statusCode = $response->getStatusCode();
+
+        if ($statusCode !== Response::HTTP_OK) {
+            throw FailedHttpRequestException::create($url, $statusCode);
         }
 
         return $response->getBody()->getContents();

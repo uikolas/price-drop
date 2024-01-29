@@ -26,7 +26,6 @@ class GuzzleHttpClientTest extends TestCase
         $this->httpClient = new GuzzleHttpClient($this->client);
     }
 
-
     public function testGet(): void
     {
         $this->client->expects(self::once())
@@ -40,6 +39,8 @@ class GuzzleHttpClientTest extends TestCase
                         'Accept-Encoding' => 'gzip, deflate, br',
                     ],
                     'timeout' => 10,
+                    'http_errors' => false,
+                    'allow_redirects' => true,
                 ]
             )
             ->willReturn(new Response(body: 'response'));
@@ -67,6 +68,8 @@ class GuzzleHttpClientTest extends TestCase
                         'Accept-Encoding' => 'gzip, deflate, br',
                     ],
                     'timeout' => 10,
+                    'http_errors' => false,
+                    'allow_redirects' => true,
                 ]
             )
             ->willThrowException(

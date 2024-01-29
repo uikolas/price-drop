@@ -9,7 +9,7 @@ class FailedHttpRequestException extends \Exception
     public static function create(string $url, int $statusCode): self
     {
         return new self(
-            \sprintf('Failed http call to: %s with status code: %d', $url, $statusCode),
+            \sprintf('Failed HTTP call to: %s. Got status code: %d', $url, $statusCode),
             $statusCode,
         );
     }
