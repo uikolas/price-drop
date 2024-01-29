@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Client;
 
-use App\Exceptions\FailedHttpRequestException;
 use Psr\Log\LoggerInterface;
 
 class LoggingHttpClient implements HttpClientInterface
@@ -17,25 +16,13 @@ class LoggingHttpClient implements HttpClientInterface
 
     public function get(string $url): string
     {
-        try {
-            $response = $this->client->get($url);
-        } catch (FailedHttpRequestException $e) {
-            $this->logger->info(
-                'HTTP request failed',
-                [
-                    'url' => $url,
-                    'status_code' => $e->getCode(),
-                ],
-            );
-
-            throw $e;
-        }
+        $response = $this->client->get($url);
 
         $this->logger->info(
             'HTTP request',
             [
                 'url' => $url,
-                'response_content' => \mb_substr($response, 0, 100),
+                'response_content' => \mb_substr($response, 0, 500),
             ],
         );
 

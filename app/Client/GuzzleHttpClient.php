@@ -29,13 +29,13 @@ class GuzzleHttpClient implements HttpClientInterface
                 ]
             );
         } catch (GuzzleException $exception) {
-            throw FailedHttpRequestException::create($url, $exception->getCode());
+            throw FailedHttpRequestException::createWithException($url, $exception);
         }
 
         $statusCode = $response->getStatusCode();
 
         if ($statusCode !== Response::HTTP_OK) {
-            throw FailedHttpRequestException::create($url, $statusCode);
+            throw FailedHttpRequestException::createWithStatusCode($url, $statusCode);
         }
 
         return $response->getBody()->getContents();
@@ -49,7 +49,7 @@ class GuzzleHttpClient implements HttpClientInterface
         return [
             'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:100.0) Gecko/20100101 Firefox/100.0',
             'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-            'Accept-Encoding' => 'gzip, deflate, br',
+            'Accept-Encoding' => 'gzip, deflate',
         ];
     }
 }
