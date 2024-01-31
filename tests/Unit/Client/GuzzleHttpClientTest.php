@@ -36,7 +36,7 @@ class GuzzleHttpClientTest extends TestCase
                     'headers' => [
                         'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:100.0) Gecko/20100101 Firefox/100.0',
                         'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-                        'Accept-Encoding' => 'gzip, deflate, br',
+                        'Accept-Encoding' => 'gzip, deflate',
                     ],
                     'timeout' => 10,
                     'http_errors' => false,
@@ -54,7 +54,14 @@ class GuzzleHttpClientTest extends TestCase
     public function testCatchAndThrowException(): void
     {
         $this->expectExceptionObject(
-            FailedHttpRequestException::create('url', 0)
+            FailedHttpRequestException::createWithException(
+                'url',
+                    new ClientException(
+                    '',
+                    $this->createMock(RequestInterface::class),
+                    $this->createMock(ResponseInterface::class)
+                ),
+            )
         );
 
         $this->client->expects(self::once())
@@ -65,7 +72,7 @@ class GuzzleHttpClientTest extends TestCase
                     'headers' => [
                         'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:100.0) Gecko/20100101 Firefox/100.0',
                         'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-                        'Accept-Encoding' => 'gzip, deflate, br',
+                        'Accept-Encoding' => 'gzip, deflate',
                     ],
                     'timeout' => 10,
                     'http_errors' => false,
@@ -79,6 +86,35 @@ class GuzzleHttpClientTest extends TestCase
                     $this->createMock(ResponseInterface::class)
                 )
             );
+
+        $this->httpClient->get('url');
+    }
+
+    public function testCatchBadStatusCodeAndThrowException(): void
+    {
+        $this->expectExceptionObject(
+            FailedHttpRequestException::createWithStatusCode(
+                'url',
+                404,
+            )
+        );
+
+        $this->client->expects(self::once())
+            ->method('get')
+            ->with(
+                'url',
+                [
+                    'headers' => [
+                        'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:100.0) Gecko/20100101 Firefox/100.0',
+                        'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+                        'Accept-Encoding' => 'gzip, deflate',
+                    ],
+                    'timeout' => 10,
+                    'http_errors' => false,
+                    'allow_redirects' => true,
+                ]
+            )
+            ->willReturn(new Response(status: 404, body: 'response'));
 
         $this->httpClient->get('url');
     }
