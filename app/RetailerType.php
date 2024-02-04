@@ -11,4 +11,5 @@ enum RetailerType: string
     case AMAZON = 'amazon';
     case G2A = 'g2a';
     case ENEBA = 'eneba';
+    case DUMMYJSON = 'dummyjson';
 }

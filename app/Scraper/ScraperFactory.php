@@ -29,8 +29,8 @@ class ScraperFactory
 
         throw new ScraperNotFoundException(
             \sprintf(
-                'Scraper not found for product retailer: %s. Maybe did you forget to register in ScraperProvider?',
-                $productRetailer->id,
+                'Scraper not found for type: %s. Maybe did you forget to register in ScraperProvider?',
+                $productRetailer->type->value,
             )
         );
     }

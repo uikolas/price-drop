@@ -4,45 +4,60 @@ declare(strict_types=1);
 
 namespace App\Scraper\Scrapers;
 
+use App\Exceptions\ScrapingFailedException;
 use App\Models\ProductRetailer;
+use App\Product\PriceHelper;
 use App\RetailerType;
 use App\Scraper\ScrapData;
 use Symfony\Component\DomCrawler\Crawler;
 
-class EnebaScraper extends AbstractScraper
+class EnebaScraper extends AbstractHtmlScraper
 {
     public function supports(ProductRetailer $productRetailer): bool
     {
         return $productRetailer->hasType(RetailerType::ENEBA);
     }
 
-    protected function doScraping(Crawler $crawler): ScrapData
+    /**
+     * {@inheritdoc}
+     */
+    protected function doScraping(Crawler $crawler, ProductRetailer $productRetailer): ScrapData
     {
-        $price = $this->scrapPrice($crawler);
+        $price = $this->scrapPrice($crawler, $productRetailer);
         $image = $this->scrapImage($crawler);
 
-        return new ScrapData($price, 'EUR', $image);
+        return new ScrapData($price, $image);
     }
 
-    private function scrapPrice(Crawler $crawler): ?string
+    /**
+     * @throws ScrapingFailedException
+     */
+    private function scrapPrice(Crawler $crawler, ProductRetailer $productRetailer): string
     {
-        try {
-            $price = $crawler->filter('.L5ErLT');
-            $cleanPrice = $price->text();
-            $cleanPrice = \trim(\mb_substr($cleanPrice, 0, -2));
+        $prices = $crawler
+            ->filter('._7z2Gr .L5ErLT')
+            ->each(
+                fn(Crawler $node): string => PriceHelper::cleanPrice(str_replace(',', '.', $node->text()))
+            );
 
-            return \str_replace(',', '.', $cleanPrice);
-        } catch (\InvalidArgumentException) {
-            return null;
+        asort($prices);
+        $price = $prices[0] ?? null;
+
+        if ($price === null) {
+            throw ScrapingFailedException::createPriceNotFound($productRetailer);
         }
+
+        return $price;
     }
 
     private function scrapImage(Crawler $crawler): ?string
     {
-        try {
-            return $crawler->filter('.OlZQ6u > picture > img')->image()->getUri();
-        } catch (\InvalidArgumentException) {
+        $image = $crawler->filter('.OlZQ6u > picture > img');
+
+        if ($image->count() === 0) {
             return null;
         }
+
+        return $image->image()->getUri();
     }
 }

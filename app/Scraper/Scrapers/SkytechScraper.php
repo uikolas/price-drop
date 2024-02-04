@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\Scraper\Scrapers;
 
-use App\Client\HttpClientInterface;
+use App\Exceptions\ScrapingFailedException;
 use App\Models\ProductRetailer;
 use App\RetailerType;
 use App\Scraper\ScrapData;
-use App\Scraper\ScraperInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
-class SkytechScraper extends AbstractScraper
+class SkytechScraper extends AbstractHtmlScraper
 {
     private const URL = 'https://www.skytech.lt';
 
@@ -20,34 +19,38 @@ class SkytechScraper extends AbstractScraper
         return $productRetailer->hasType(RetailerType::SKYTECH);
     }
 
-    protected function doScraping(Crawler $crawler): ScrapData
+    protected function doScraping(Crawler $crawler, ProductRetailer $productRetailer): ScrapData
     {
-        $price = $this->scrapPrice($crawler);
+        $price = $this->scrapPrice($crawler, $productRetailer);
         $image = $this->scrapImage($crawler);
 
-        return new ScrapData($price, 'EUR', $image);
+        return new ScrapData($price, $image);
     }
 
-    private function scrapPrice(Crawler $crawler): ?string
+    /**
+     * @throws ScrapingFailedException
+     */
+    private function scrapPrice(Crawler $crawler, ProductRetailer $productRetailer): string
     {
-        try {
-            $price = $crawler->filter('.num');
-            $cleanPrice = $price->text();
+        $price = $crawler->filter('.num');
 
-            return \mb_substr($cleanPrice, 0, -1);
-        } catch (\InvalidArgumentException) {
-            return null;
+        if ($price->count() === 0) {
+            throw ScrapingFailedException::createPriceNotFound($productRetailer);
         }
+
+        $cleanPrice = $price->text();
+
+        return \mb_substr($cleanPrice, 0, -1);
     }
 
     private function scrapImage(Crawler $crawler): ?string
     {
-        try {
-            $image = $crawler->filter('#main-product-image')->attr('src');
+        $image = $crawler->filter('#main-product-image');
 
-            return self::URL. $image;
-        } catch (\InvalidArgumentException) {
+        if ($image->count() === 0) {
             return null;
         }
+
+        return self::URL . $image->attr('src');
     }
 }

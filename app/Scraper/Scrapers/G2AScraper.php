@@ -4,67 +4,71 @@ declare(strict_types=1);
 
 namespace App\Scraper\Scrapers;
 
-use App\Client\HttpClientInterface;
 use App\Exceptions\ScrapingFailedException;
 use App\Models\ProductRetailer;
+use App\Product\PriceHelper;
 use App\RetailerType;
 use App\Scraper\ScrapData;
-use App\Scraper\ScraperInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
-class G2AScraper implements ScraperInterface
+class G2AScraper extends AbstractHtmlScraper
 {
-    public function __construct(
-        private readonly HttpClientInterface $client,
-        private readonly Crawler $crawler
-    ) {
-    }
-
     public function supports(ProductRetailer $productRetailer): bool
     {
         return $productRetailer->hasType(RetailerType::G2A);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function scrap(ProductRetailer $productRetailer): ScrapData
     {
-        try {
-            $response = $this->client->get(
-                \sprintf('%s?___currency=EUR&___locale=en', $productRetailer->url)
-            );
-            $this->crawler->addHtmlContent($response);
+        $response = $this->client->get(\sprintf('%s?___currency=EUR&___locale=en', $productRetailer->url));
+        $this->crawler->addHtmlContent($response);
 
-            return $this->doScraping($this->crawler);
-        } catch (\InvalidArgumentException $exception) {
-            throw ScrapingFailedException::create($exception);
-        }
+        return $this->doScraping($this->crawler, $productRetailer);
     }
 
-    protected function doScraping(Crawler $crawler): ScrapData
+    /**
+     * {@inheritdoc}
+     */
+    protected function doScraping(Crawler $crawler, ProductRetailer $productRetailer): ScrapData
     {
-        $price = $this->scrapPrice($crawler);
+        $price = $this->scrapPrice($crawler, $productRetailer);
         $image = $this->scrapImage($crawler);
 
-        return new ScrapData($price, 'EUR', $image);
+        return new ScrapData($price, $image);
     }
 
-    private function scrapPrice(Crawler $crawler): ?string
+    /**
+     * @throws ScrapingFailedException
+     */
+    private function scrapPrice(Crawler $crawler, ProductRetailer $productRetailer): string
     {
-        try {
-            $price = $crawler->filter('[data-locator="zth-price"]');
-            $cleanPrice = $price->text();
+        $prices = $crawler
+            ->filter('[data-locator="ppa-offers-list__item"] [data-locator="ppa-offers-list__price"]')
+            ->each(
+                fn(Crawler $node): string => PriceHelper::cleanPrice($node->text())
+            );
 
-            return \trim(\mb_substr($cleanPrice, 1));
-        } catch (\InvalidArgumentException) {
-            return null;
+        asort($prices);
+        $price = $prices[0] ?? null;
+
+        if ($price === null) {
+            throw ScrapingFailedException::createPriceNotFound($productRetailer);
         }
+
+        return $price;
     }
 
     private function scrapImage(Crawler $crawler): ?string
     {
-        try {
-            return $crawler->filter('[data-locator="ppa-gallery_cover-image"]')->image()->getUri();
-        } catch (\InvalidArgumentException) {
+        $image = $crawler->filter('[data-locator="ppa-gallery_cover-image"]');
+
+        if ($image->count() === 0) {
             return null;
         }
+
+        return $image->image()->getUri();
     }
 }
