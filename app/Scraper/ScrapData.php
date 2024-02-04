@@ -6,10 +6,12 @@ namespace App\Scraper;
 
 class ScrapData
 {
+    public const CURRENCY_CURRENCY = 'EUR';
+
     public function __construct(
-        private readonly ?string $price,
-        private readonly ?string $currency,
+        private readonly string $price,
         private readonly ?string $image,
+        private readonly ?string $currency = self::CURRENCY_CURRENCY,
     ) {
     }
 

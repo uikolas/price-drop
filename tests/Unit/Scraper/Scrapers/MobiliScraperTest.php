@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Tests\Unit\Scraper\Scrapers;
 
 use App\Client\HttpClientInterface;
+use App\Exceptions\ScrapingFailedException;
 use App\Models\ProductRetailer;
 use App\Scraper\ScrapData;
 use App\Scraper\Scrapers\MobiliScraper;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DomCrawler\Crawler;
 use Tests\TestDataHelper;
@@ -16,37 +18,51 @@ class MobiliScraperTest extends TestCase
 {
     use TestDataHelper;
 
-    /**
-     * @dataProvider scrapDataProvider
-     */
-    public function testScrap(string $data, ScrapData $expectedResult): void
-    {
-        $client = $this->createMock(HttpClientInterface::class);
-        $scraper = new MobiliScraper($client, new Crawler());
+    private HttpClientInterface&MockObject $client;
 
-        $client->expects(self::once())
+    private MobiliScraper $scraper;
+
+    protected function setUp(): void
+    {
+        $this->client = $this->createMock(HttpClientInterface::class);
+        $this->scraper = new MobiliScraper($this->client, new Crawler());
+    }
+
+    public function testScrap(): void
+    {
+        $this->client->expects(self::once())
             ->method('get')
             ->with('http://temp')
-            ->willReturn($data);
+            ->willReturn(self::getTestData('mobili.txt'));
 
         self::assertEquals(
-            $expectedResult,
-            $scraper->scrap(
-                new ProductRetailer(['url' => 'http://temp'])
-            )
+            new ScrapData('189.00', 'https://www.mobili.lt/images/bigphones/nokia_nokia_g50_823045.png'),
+            $this->scraper->scrap(new ProductRetailer(['url' => 'http://temp']))
         );
     }
 
-    public function scrapDataProvider(): iterable
+    public function testThrowExceptionIfPriceIsNotFound(): void
     {
-        yield 'correct values' => [
-            $this->getTestData('mobili.txt'),
-            new ScrapData('189.00', 'EUR', 'https://www.mobili.lt/images/bigphones/nokia_nokia_g50_823045.png'),
-        ];
+        $this->expectException(ScrapingFailedException::class);
 
-        yield 'values not found' => [
-            '',
-            new ScrapData(null, 'EUR', null),
-        ];
+        $this->client->expects(self::once())
+            ->method('get')
+            ->with('http://temp')
+            ->willReturn('');
+
+        $this->scraper->scrap(new ProductRetailer(['url' => 'http://temp']));
+    }
+
+    public function testReturnImageNullIfNotFound(): void
+    {
+        $this->client->expects(self::once())
+            ->method('get')
+            ->with('http://temp')
+            ->willReturn('<div class="prices prices_full"><span class="ltl">189,00&nbsp;&euro;</span></div>');
+
+        self::assertEquals(
+            new ScrapData('189.00', null),
+            $this->scraper->scrap(new ProductRetailer(['url' => 'http://temp']))
+        );
     }
 }

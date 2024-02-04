@@ -45,7 +45,7 @@ class GuzzleHttpClientTest extends TestCase
             )
             ->willReturn(new Response(body: 'response'));
 
-        self::assertSame(
+        self::assertEquals(
             'response',
             $this->httpClient->get('url')
         );

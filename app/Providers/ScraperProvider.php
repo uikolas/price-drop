@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Scraper\ScraperFactory;
 use App\Scraper\Scrapers\AmazonScraper;
+use App\Scraper\Scrapers\DummyJsonScraper;
 use App\Scraper\Scrapers\EnebaScraper;
 use App\Scraper\Scrapers\G2AScraper;
 use App\Scraper\Scrapers\MobiliScraper;
@@ -24,6 +25,7 @@ class ScraperProvider extends ServiceProvider
         AmazonScraper::class,
         G2AScraper::class,
         EnebaScraper::class,
+        DummyJsonScraper::class,
     ];
 
     public function register(): void
