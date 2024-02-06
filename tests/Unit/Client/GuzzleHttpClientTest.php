@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Client;
 
+use App\Client\Guzzle\GuzzleFactory;
 use App\Client\GuzzleHttpClient;
 use App\Exceptions\FailedHttpRequestException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\Constraint\ArrayHasKey;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
@@ -18,30 +20,36 @@ class GuzzleHttpClientTest extends TestCase
 {
     private Client&MockObject $client;
 
+    private GuzzleFactory&MockObject $guzzleFactory;
+
     private GuzzleHttpClient $httpClient;
 
     protected function setUp(): void
     {
         $this->client = $this->createMock(Client::class);
-        $this->httpClient = new GuzzleHttpClient($this->client);
+        $this->guzzleFactory = $this->createMock(GuzzleFactory::class);
+        $this->httpClient = new GuzzleHttpClient($this->guzzleFactory);
     }
 
     public function testGet(): void
     {
+        $this->guzzleFactory->expects(self::once())
+            ->method('create')
+            ->willReturn($this->client);
+
         $this->client->expects(self::once())
             ->method('get')
             ->with(
                 'url',
-                [
-                    'headers' => [
-                        'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:100.0) Gecko/20100101 Firefox/100.0',
-                        'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-                        'Accept-Encoding' => 'gzip, deflate',
-                    ],
-                    'timeout' => 10,
-                    'http_errors' => false,
-                    'allow_redirects' => true,
-                ]
+                $this->callback(function(array $options) {
+                    $headers = $options['headers'];
+
+                    self::assertArrayHasKey('User-Agent', $headers);
+                    self::assertSame('text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', $headers['Accept']);
+                    self::assertSame('gzip, deflate', $headers['Accept-Encoding']);
+
+                    return true;
+                })
             )
             ->willReturn(new Response(body: 'response'));
 
@@ -64,20 +72,23 @@ class GuzzleHttpClientTest extends TestCase
             )
         );
 
+        $this->guzzleFactory->expects(self::once())
+            ->method('create')
+            ->willReturn($this->client);
+
         $this->client->expects(self::once())
             ->method('get')
             ->with(
                 'url',
-                [
-                    'headers' => [
-                        'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:100.0) Gecko/20100101 Firefox/100.0',
-                        'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-                        'Accept-Encoding' => 'gzip, deflate',
-                    ],
-                    'timeout' => 10,
-                    'http_errors' => false,
-                    'allow_redirects' => true,
-                ]
+                $this->callback(function(array $options) {
+                    $headers = $options['headers'];
+
+                    self::assertArrayHasKey('User-Agent', $headers);
+                    self::assertSame('text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', $headers['Accept']);
+                    self::assertSame('gzip, deflate', $headers['Accept-Encoding']);
+
+                    return true;
+                })
             )
             ->willThrowException(
                 new ClientException(
@@ -99,20 +110,23 @@ class GuzzleHttpClientTest extends TestCase
             )
         );
 
+        $this->guzzleFactory->expects(self::once())
+            ->method('create')
+            ->willReturn($this->client);
+
         $this->client->expects(self::once())
             ->method('get')
             ->with(
                 'url',
-                [
-                    'headers' => [
-                        'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:100.0) Gecko/20100101 Firefox/100.0',
-                        'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-                        'Accept-Encoding' => 'gzip, deflate',
-                    ],
-                    'timeout' => 10,
-                    'http_errors' => false,
-                    'allow_redirects' => true,
-                ]
+                $this->callback(function(array $options) {
+                    $headers = $options['headers'];
+
+                    self::assertArrayHasKey('User-Agent', $headers);
+                    self::assertSame('text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8', $headers['Accept']);
+                    self::assertSame('gzip, deflate', $headers['Accept-Encoding']);
+
+                    return true;
+                })
             )
             ->willReturn(new Response(status: 404, body: 'response'));
 

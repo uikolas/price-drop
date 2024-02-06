@@ -6,6 +6,7 @@ namespace App\Scraper\Scrapers;
 
 use App\Exceptions\ScrapingFailedException;
 use App\Models\ProductRetailer;
+use App\Product\PriceHelper;
 use App\RetailerType;
 use App\Scraper\ScrapData;
 use Symfony\Component\DomCrawler\Crawler;
@@ -40,7 +41,7 @@ class SkytechScraper extends AbstractHtmlScraper
 
         $cleanPrice = $price->text();
 
-        return \mb_substr($cleanPrice, 0, -1);
+        return PriceHelper::cleanPrice($cleanPrice);
     }
 
     private function scrapImage(Crawler $crawler): ?string
