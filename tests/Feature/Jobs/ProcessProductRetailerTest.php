@@ -24,7 +24,7 @@ class ProcessProductRetailerTest extends TestCase
     {
         $now = Carbon::create(2021, 5, 21);
         Carbon::setTestNow($now);
-        $data = $this->getTestData('mobili.txt');
+        $data = self::getTestData('mobili.txt');
 
         $productRetailer = ProductRetailer::factory()
             ->type(RetailerType::MOBILI)
@@ -51,7 +51,7 @@ class ProcessProductRetailerTest extends TestCase
     public function test_do_not_update_if_price_was_not_changed(): void
     {
         Carbon::setTestNow(Carbon::create(2021, 5, 21));
-        $data = $this->getTestData('mobili.txt');
+        $data = self::getTestData('mobili.txt');
 
         $productRetailer = ProductRetailer::factory()
             ->type(RetailerType::MOBILI)
@@ -82,7 +82,7 @@ class ProcessProductRetailerTest extends TestCase
     {
         Notification::fake();
 
-        $data = $this->getTestData('mobili.txt');
+        $data = self::getTestData('mobili.txt');
 
         $product = $this->createProduct();
         $productRetailer = ProductRetailer::factory()
