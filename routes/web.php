@@ -17,14 +17,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::middleware(['guest'])->group(function () {
+    Route::view('/', 'index');
 
-Route::get('/login', [AuthController::class, 'show'])->name('login');
-Route::post('/login', [AuthController::class, 'authenticate']);
+    Route::get('/login', [AuthController::class, 'show'])->name('login');
+    Route::post('/login', [AuthController::class, 'authenticate']);
+});
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
-
-    Route::get('/', [ProductController::class, 'index']);
     Route::resource('products', ProductController::class)->only(['index', 'create', 'store', 'show', 'destroy']);
     Route::resource('products.retailers', ProductRetailerController::class)
         ->shallow()
