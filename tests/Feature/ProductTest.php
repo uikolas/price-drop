@@ -21,7 +21,7 @@ class ProductTest extends TestCase
 
         $response = $this
             ->actingAs($product->user)
-            ->get('/');
+            ->get('/products');
 
         $response->assertStatus(200);
         $response->assertSeeText('Some product name');
@@ -29,7 +29,7 @@ class ProductTest extends TestCase
 
     public function test_product_index_authorization(): void
     {
-        $response = $this->get('/');
+        $response = $this->get('/products');
 
         $response->assertRedirect();
         $this->assertGuest();
