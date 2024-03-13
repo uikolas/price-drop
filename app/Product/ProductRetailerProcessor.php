@@ -29,10 +29,20 @@ class ProductRetailerProcessor
     {
         $product = $productRetailer->product;
         $bestRetailer = $product->bestRetailer();
+        $scraper = $this->scraperFactory->createFromRetailer($productRetailer);
 
-        $data = $this->scraperFactory
-            ->createFromRetailer($productRetailer)
-            ->scrap($productRetailer);
+        try {
+            $data = $scraper->scrap($productRetailer);
+        } catch (FailedHttpRequestException $e) {
+            if ($e->isNotFound()) {
+                $productRetailer->resetPrice();
+                $productRetailer->save();
+
+                return;
+            }
+
+            throw $e;
+        }
 
         $this->updateProductRetailer($productRetailer, $data);
 
@@ -44,8 +54,7 @@ class ProductRetailerProcessor
     private function updateProductRetailer(ProductRetailer $productRetailer, ScrapData $data): void
     {
         if (!$this->priceComparator->arePricesEqual($productRetailer->price, $data->getPrice())) {
-            $productRetailer->price = $data->getPrice();
-            $productRetailer->price_updated_at = now();
+            $productRetailer->updatePrice($data->getPrice());
         }
 
         if ($data->getCurrency() !== null) {

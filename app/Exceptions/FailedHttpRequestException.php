@@ -41,4 +41,9 @@ class FailedHttpRequestException extends \Exception
     {
         return $this->statusCode;
     }
+
+    public function isNotFound(): bool
+    {
+        return $this->statusCode === 404;
+    }
 }

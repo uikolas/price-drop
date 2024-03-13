@@ -61,4 +61,16 @@ class ProductRetailer extends Model
     {
         return $this->type === $retailerType;
     }
+
+    public function updatePrice(string $price): void
+    {
+        $this->price = $price;
+        $this->price_updated_at = now();
+    }
+
+    public function resetPrice(): void
+    {
+        $this->price = null;
+        $this->price_updated_at = null;
+    }
 }

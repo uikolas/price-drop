@@ -15,7 +15,7 @@ class ScrapData
     ) {
     }
 
-    public function getPrice(): ?string
+    public function getPrice(): string
     {
         return $this->price;
     }
