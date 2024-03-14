@@ -1,8 +1,8 @@
 # :droplet: Price drop
-Price drop is a small app which allows tracking prices of added products and get email notification about price drop. Written with Laravel 10.
+Price drop is a small app which allows tracking prices of added products and get email notification about price drop. Written with Laravel 11.
 
 ## Installation
-To run project locally it's recommended to install docker and use  [Laravel Sail](https://laravel.com/docs/10.x/sail#installing-composer-dependencies-for-existing-projects).
+To run project locally it's recommended to install docker and use  [Laravel Sail](https://laravel.com/docs/11.x/sail#installing-composer-dependencies-for-existing-projects).
 
 After running docker with sail you can run:
 
@@ -20,9 +20,9 @@ To update prices for all retailers just run (also this command sends notificatio
 
 `php artisan retailers:update`
 
-Or you can configure [Laravel Task Scheduling](https://laravel.com/docs/10.x/scheduling)
+Or you can configure [Laravel Task Scheduling](https://laravel.com/docs/11.x/scheduling)
 
-After running command. It will create queue jobs which later needs to be handled by [a queue](https://laravel.com/docs/10.x/queues#running-the-queue-worker) 
+After running command. It will create queue jobs which later needs to be handled by [a queue](https://laravel.com/docs/11.x/queues#running-the-queue-worker) 
 
 `php artisan queue:work` or `php artisan queue:work --stop-when-empty`
 
