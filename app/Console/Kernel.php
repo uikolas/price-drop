@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
     {
 //         $schedule->command('inspire')->everyMinute();
         $schedule->command('retailers:update')->daily();
+        $schedule->command('ping')->everyTenMinutes();
     }
 
     /**
