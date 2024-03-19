@@ -41,16 +41,23 @@ class ProductRetailer extends Model
 {
     use HasFactory;
 
-    protected $casts = [
-        'type' => RetailerType::class,
-        'price' => 'decimal:2',
-        'price_updated_at' => 'datetime',
-    ];
-
     protected $fillable = [
         'url',
         'type',
     ];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'type' => RetailerType::class,
+            'price' => 'decimal:2',
+            'price_updated_at' => 'datetime',
+        ];
+    }
+
 
     public function product(): BelongsTo
     {

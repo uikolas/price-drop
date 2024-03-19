@@ -8,10 +8,14 @@ use App\Models\Product;
 use App\Models\ProductRetailer;
 use App\RetailerType;
 use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\RedirectResponse;
 
 class ProductRetailerController extends Controller
 {
+    use AuthorizesRequests, DispatchesJobs;
+
     public function __construct()
     {
         // https://github.com/laravel/ideas/issues/1612

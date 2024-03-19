@@ -8,8 +8,6 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreatesApplication;
-
     protected function otherUser(): User
     {
         return User::factory()->make();
