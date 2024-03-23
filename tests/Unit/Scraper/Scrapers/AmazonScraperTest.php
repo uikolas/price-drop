@@ -7,6 +7,7 @@ namespace Tests\Unit\Scraper\Scrapers;
 use App\Client\HttpClientInterface;
 use App\Exceptions\ScrapingFailedException;
 use App\Models\ProductRetailer;
+use App\Price;
 use App\Scraper\ScrapData;
 use App\Scraper\Scrapers\AmazonScraper;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -35,7 +36,7 @@ class AmazonScraperTest extends TestCase
             ->willReturn(self::getTestData('amazon.txt'));
 
         self::assertEquals(
-            new ScrapData('558.99', 'https://m.media-amazon.com/images/I/51t1T3R5v3L.__AC_SY445_SX342_QL70_FMwebp_.jpg'),
+            new ScrapData(new Price('558.99'), 'https://m.media-amazon.com/images/I/51t1T3R5v3L.__AC_SY445_SX342_QL70_FMwebp_.jpg'),
             $this->scraper->scrap(new ProductRetailer(['url' => 'http://temp']))
         );
     }
@@ -60,7 +61,7 @@ class AmazonScraperTest extends TestCase
             ->willReturn('<input type="hidden" id="twister-plus-price-data-price" value="558.99" />');
 
         self::assertEquals(
-            new ScrapData('558.99', null),
+            new ScrapData(new Price('558.99'), null),
             $this->scraper->scrap(new ProductRetailer(['url' => 'http://temp']))
         );
     }

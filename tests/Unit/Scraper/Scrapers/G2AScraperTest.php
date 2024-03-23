@@ -7,6 +7,7 @@ namespace Tests\Unit\Scraper\Scrapers;
 use App\Client\HttpClientInterface;
 use App\Exceptions\ScrapingFailedException;
 use App\Models\ProductRetailer;
+use App\Price;
 use App\Scraper\ScrapData;
 use App\Scraper\Scrapers\G2AScraper;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -36,7 +37,7 @@ class G2AScraperTest extends TestCase
             ->willReturn(self::getTestData('g2a.txt'));
 
         self::assertEquals(
-            new ScrapData('40.73', 'https://images.g2a.com/360x600/1x1x1/nba-2k24-kobe-bryant-edition-xbox-series-x-s-xbox-live-key-global-i10000340079029/96e0945f27084558a0f77237'),
+            new ScrapData(new Price('40.73'), 'https://images.g2a.com/360x600/1x1x1/nba-2k24-kobe-bryant-edition-xbox-series-x-s-xbox-live-key-global-i10000340079029/96e0945f27084558a0f77237'),
             $this->scraper->scrap(new ProductRetailer(['url' => 'http://temp']))
         );
     }
@@ -61,7 +62,7 @@ class G2AScraperTest extends TestCase
             ->willReturn('<div data-locator="ppa-offers-list__item"><span data-locator="ppa-offers-list__price">100.00</span></div>');
 
         self::assertEquals(
-            new ScrapData('100.00', null),
+            new ScrapData(new Price('100.00'), null),
             $this->scraper->scrap(new ProductRetailer(['url' => 'http://temp']))
         );
     }

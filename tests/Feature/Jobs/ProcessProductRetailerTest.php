@@ -9,6 +9,7 @@ use App\Exceptions\FailedHttpRequestException;
 use App\Jobs\ProcessProductRetailer;
 use App\Models\ProductRetailer;
 use App\Notifications\PriceDrop;
+use App\Price;
 use App\RetailerType;
 use App\Product\ProductRetailerProcessor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -42,7 +43,7 @@ class ProcessProductRetailerTest extends TestCase
 
         $updatedProductRetailer = $productRetailer->fresh();
 
-        self::assertEquals('189.00', $updatedProductRetailer->price);
+        self::assertEquals(new Price('189.00'), $updatedProductRetailer->price);
         self::assertEquals($now, $updatedProductRetailer->price_updated_at);
         self::assertEquals('EUR', $updatedProductRetailer->currency);
         self::assertEquals('https://www.mobili.lt/images/bigphones/nokia_nokia_g50_823045.png', $updatedProductRetailer->image);
@@ -56,7 +57,7 @@ class ProcessProductRetailerTest extends TestCase
 
         $productRetailer = ProductRetailer::factory()
             ->type(RetailerType::MOBILI)
-            ->price('189.00')
+            ->price(new Price('189.00'))
             ->priceUpdatedAt(Carbon::create(2020, 1, 10))
             ->create();
 
@@ -71,7 +72,7 @@ class ProcessProductRetailerTest extends TestCase
 
         $updatedProductRetailer = $productRetailer->fresh();
 
-        self::assertEquals('189.00', $updatedProductRetailer->price);
+        self::assertEquals(new Price('189.00'), $updatedProductRetailer->price);
         self::assertEquals(Carbon::create(2020, 1, 10), $updatedProductRetailer->price_updated_at);
         self::assertEquals(RetailerType::MOBILI, $updatedProductRetailer->type);
     }
@@ -89,20 +90,20 @@ class ProcessProductRetailerTest extends TestCase
         $productRetailer = ProductRetailer::factory()
             ->for($product)
             ->type(RetailerType::MOBILI)
-            ->price($currentPrice)
+            ->price(new Price($currentPrice))
             ->create();
 
         // Additional retailers
         ProductRetailer::factory()
             ->for($product)
             ->type(RetailerType::SKYTECH)
-            ->price('299.99')
+            ->price(new Price('299.99'))
             ->create();
 
         ProductRetailer::factory()
             ->for($product)
             ->type(RetailerType::AMAZON)
-            ->price('199.99')
+            ->price(new Price('199.99'))
             ->create();
 
         $this->mock(HttpClientInterface::class)
@@ -116,7 +117,7 @@ class ProcessProductRetailerTest extends TestCase
 
         $updatedProductRetailer = $productRetailer->fresh();
 
-        self::assertEquals('189.00', $updatedProductRetailer->price);
+        self::assertEquals(new Price('189.00'), $updatedProductRetailer->price);
         self::assertEquals(RetailerType::MOBILI, $updatedProductRetailer->type);
         Notification::assertSentTo([$product->user], PriceDrop::class);
     }

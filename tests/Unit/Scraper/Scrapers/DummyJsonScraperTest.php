@@ -7,6 +7,7 @@ namespace Tests\Unit\Scraper\Scrapers;
 use App\Client\HttpClientInterface;
 use App\Exceptions\ScrapingFailedException;
 use App\Models\ProductRetailer;
+use App\Price;
 use App\Scraper\ScrapData;
 use App\Scraper\Scrapers\DummyJsonScraper;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -32,7 +33,7 @@ class DummyJsonScraperTest extends TestCase
             ->willReturn('{"id":1,"title":"iPhone 9","description":"An apple mobile which is nothing like apple","price":549,"discountPercentage":12.96,"rating":4.69,"stock":94,"brand":"Apple","category":"smartphones","thumbnail":"https://cdn.dummyjson.com/product-images/1/thumbnail.jpg","images":["https://cdn.dummyjson.com/product-images/1/1.jpg","https://cdn.dummyjson.com/product-images/1/2.jpg","https://cdn.dummyjson.com/product-images/1/3.jpg","https://cdn.dummyjson.com/product-images/1/4.jpg","https://cdn.dummyjson.com/product-images/1/thumbnail.jpg"]}');
 
         self::assertEquals(
-            new ScrapData('549.00', 'https://cdn.dummyjson.com/product-images/1/1.jpg'),
+            new ScrapData(new Price('549.00'), 'https://cdn.dummyjson.com/product-images/1/1.jpg'),
             $this->scraper->scrap(new ProductRetailer(['url' => 'http://temp'])),
         );
     }

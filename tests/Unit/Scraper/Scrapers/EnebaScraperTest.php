@@ -7,6 +7,7 @@ namespace Tests\Unit\Scraper\Scrapers;
 use App\Client\HttpClientInterface;
 use App\Exceptions\ScrapingFailedException;
 use App\Models\ProductRetailer;
+use App\Price;
 use App\Scraper\ScrapData;
 use App\Scraper\Scrapers\EnebaScraper;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -39,7 +40,7 @@ class EnebaScraperTest extends TestCase
             ->willReturn($data);
 
         self::assertEquals(
-            new ScrapData($expectedPrice, 'https://cdn-products.eneba.com/resized-products/hafzC5AQuovHRu1jmbSFDcq0j1eTzV5uEKfbyEjDvog_350x200_1x-0.jpg'),
+            new ScrapData(new Price($expectedPrice), 'https://cdn-products.eneba.com/resized-products/hafzC5AQuovHRu1jmbSFDcq0j1eTzV5uEKfbyEjDvog_350x200_1x-0.jpg'),
             $this->scraper->scrap(new ProductRetailer(['url' => 'http://temp']))
         );
     }
@@ -77,7 +78,7 @@ class EnebaScraperTest extends TestCase
             ->willReturn('<div class="_7z2Gr"><span class="L5ErLT">10,99 €</span></div>');
 
         self::assertEquals(
-            new ScrapData('10.99', null),
+            new ScrapData(new Price('10.99'), null),
             $this->scraper->scrap(new ProductRetailer(['url' => 'http://temp']))
         );
     }

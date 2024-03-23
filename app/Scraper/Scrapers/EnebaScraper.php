@@ -6,6 +6,7 @@ namespace App\Scraper\Scrapers;
 
 use App\Exceptions\ScrapingFailedException;
 use App\Models\ProductRetailer;
+use App\Price;
 use App\Product\PriceHelper;
 use App\RetailerType;
 use App\Scraper\ScrapData;
@@ -26,7 +27,7 @@ class EnebaScraper extends AbstractHtmlScraper
         $price = $this->scrapPrice($crawler, $productRetailer);
         $image = $this->scrapImage($crawler);
 
-        return new ScrapData($price, $image);
+        return new ScrapData(new Price($price), $image);
     }
 
     /**

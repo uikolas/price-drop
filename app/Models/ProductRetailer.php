@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Casts\PriceCast;
+use App\Price;
 use App\RetailerType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property int $id
  * @property string $url
- * @property string|null $price
+ * @property Price|null $price
  * @property RetailerType::class $type
  * @property int $product_id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -29,7 +31,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|ProductRetailer whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ProductRetailer whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ProductRetailer whereUrl($value)
- * @property string|null $currency
  * @method static \Illuminate\Database\Eloquent\Builder|ProductRetailer whereCurrency($value)
  * @property string|null $image
  * @method static \Illuminate\Database\Eloquent\Builder|ProductRetailer whereImage($value)
@@ -53,11 +54,10 @@ class ProductRetailer extends Model
     {
         return [
             'type' => RetailerType::class,
-            'price' => 'decimal:2',
+            'price' => PriceCast::class,
             'price_updated_at' => 'datetime',
         ];
     }
-
 
     public function product(): BelongsTo
     {
@@ -69,7 +69,7 @@ class ProductRetailer extends Model
         return $this->type === $retailerType;
     }
 
-    public function updatePrice(string $price): void
+    public function updatePrice(Price $price): void
     {
         $this->price = $price;
         $this->price_updated_at = now();

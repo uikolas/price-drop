@@ -6,6 +6,7 @@ namespace Tests\Feature\Models;
 
 use App\Models\Product;
 use App\Models\ProductRetailer;
+use App\Price;
 use App\RetailerType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -27,17 +28,17 @@ class ProductTest extends TestCase
         ProductRetailer::factory()
             ->for($product)
             ->type(RetailerType::MOBILI)
-            ->price('760.00')
+            ->price(new Price('760.00'))
             ->create();
 
         ProductRetailer::factory()
             ->for($product)
             ->type(RetailerType::AMAZON)
-            ->price('1499.00')
+            ->price(new Price('1499.11'))
             ->create();
 
         $bestRetailer = $product->bestRetailer();
-        self::assertSame('760.00',  $bestRetailer->price);
+        self::assertEquals(new Price('760.00'), $bestRetailer->price);
         self::assertTrue($bestRetailer->hasType(RetailerType::MOBILI));
     }
 }
