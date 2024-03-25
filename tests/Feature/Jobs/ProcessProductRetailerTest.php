@@ -52,14 +52,15 @@ class ProcessProductRetailerTest extends TestCase
 
     public function test_do_not_update_if_price_was_not_changed(): void
     {
-        Carbon::setTestNow(Carbon::create(2021, 5, 21));
+        Carbon::setTestNow(Carbon::create(2020, 1, 10));
         $data = self::getTestData('mobili.txt');
 
         $productRetailer = ProductRetailer::factory()
             ->type(RetailerType::MOBILI)
             ->price(new Price('189.00'))
-            ->priceUpdatedAt(Carbon::create(2020, 1, 10))
             ->create();
+
+        Carbon::setTestNow(Carbon::create(2021, 5, 21));
 
         $this->mock(HttpClientInterface::class)
             ->shouldReceive('get')
@@ -137,11 +138,8 @@ class ProcessProductRetailerTest extends TestCase
     {
         $productRetailer = ProductRetailer::factory()
             ->type(RetailerType::MOBILI)
-            ->create(
-                [
-                    'image' => 'https://www.mobili.lt/images/bigphones/nokia_nokia_g50_823045.png',
-                ]
-            );
+            ->image('https://www.mobili.lt/images/bigphones/nokia_nokia_g50_823045.png')
+            ->create();
 
         $this->mock(HttpClientInterface::class)
             ->shouldReceive('get')

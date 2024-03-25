@@ -24,6 +24,11 @@ final class Price
         return $this->currency;
     }
 
+    public function getFormatted(): string
+    {
+        return \sprintf('%s %s', $this->value, $this->currency);
+    }
+
     public function lessThan(?Price $anotherPrice): bool
     {
         if ($anotherPrice === null) {

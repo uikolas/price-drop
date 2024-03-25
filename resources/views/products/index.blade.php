@@ -20,7 +20,7 @@
                         <div class="card-body">
                             <h2 class="card-title">{{ $product->name }}</h2>
                             @if ($bestRetailer)
-                                <h6 class="card-subtitle mb-2 text-muted">Best price so far: <strong>{{ $bestRetailer->price }} {{ $bestRetailer->currency }}</strong></h6>
+                                <h6 class="card-subtitle mb-2 text-muted">Best price so far: <strong>{{ $bestRetailer->price->getFormatted() }}</strong></h6>
                                 <h6>Last update: {{ $bestRetailer->updated_at->diffForHumans() }}</h6>
                             @endif
                             <a href="{{ route('products.show', [$product]) }}" class="card-link">View product</a>

@@ -69,15 +69,13 @@ class ProductRetailer extends Model
         return $this->type === $retailerType;
     }
 
-    public function updatePrice(Price $price): void
+    protected static function booted(): void
     {
-        $this->price = $price;
-        $this->price_updated_at = now();
-    }
-
-    public function resetPrice(): void
-    {
-        $this->price = null;
-        $this->price_updated_at = null;
+        static::saving(static function (ProductRetailer $productRetailer) {
+            $dirty = $productRetailer->getDirty();
+            if (\array_key_exists('price', $dirty)) {
+                $productRetailer->price_updated_at = $dirty['price'] !== null ? now() : null;
+            }
+        });
     }
 }

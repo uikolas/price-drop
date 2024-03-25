@@ -45,11 +45,11 @@ class ProductRetailerFactory extends Factory
         });
     }
 
-    public function priceUpdatedAt(Carbon $date): static
+    public function image(string $image): static
     {
-        return $this->state(function (array $attributes) use ($date) {
+        return $this->state(function (array $attributes) use ($image) {
             return [
-                'price_updated_at' => $date,
+                'image' => $image,
             ];
         });
     }

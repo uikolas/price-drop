@@ -34,7 +34,7 @@ class ProductRetailerProcessor
             $data = $scraper->scrap($productRetailer);
         } catch (FailedHttpRequestException $e) {
             if ($e->isNotFound()) {
-                $productRetailer->resetPrice();
+                $productRetailer->price = null;
                 $productRetailer->save();
 
                 return;
@@ -53,7 +53,7 @@ class ProductRetailerProcessor
     private function updateProductRetailer(ProductRetailer $productRetailer, ScrapData $data): void
     {
         if (!$productRetailer->price?->equals($data->getPrice())) {
-            $productRetailer->updatePrice($data->getPrice());
+            $productRetailer->price = $data->getPrice();
         }
 
         if ($data->getImage() !== null) {
