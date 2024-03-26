@@ -7,6 +7,7 @@ namespace App\Scraper\Scrapers;
 use App\Client\HttpClientInterface;
 use App\Exceptions\ScrapingFailedException;
 use App\Models\ProductRetailer;
+use App\Price;
 use App\RetailerType;
 use App\Scraper\ScrapData;
 use App\Scraper\ScraperInterface;
@@ -39,7 +40,7 @@ class DummyJsonScraper implements ScraperInterface
         }
 
         return new ScrapData(
-            \number_format(\round($data['price'], 2), 2, '.', ''),
+            new Price(\number_format(\round($data['price'], 2), 2, '.', '')),
             $data['images'][0] ?? null
         );
     }

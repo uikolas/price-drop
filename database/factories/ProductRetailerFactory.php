@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Product;
+use App\Price;
 use App\RetailerType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
@@ -35,7 +36,7 @@ class ProductRetailerFactory extends Factory
         });
     }
 
-    public function price(string $price): static
+    public function price(Price $price): static
     {
         return $this->state(function (array $attributes) use ($price) {
             return [
@@ -44,11 +45,11 @@ class ProductRetailerFactory extends Factory
         });
     }
 
-    public function priceUpdatedAt(Carbon $date): static
+    public function image(string $image): static
     {
-        return $this->state(function (array $attributes) use ($date) {
+        return $this->state(function (array $attributes) use ($image) {
             return [
-                'price_updated_at' => $date,
+                'image' => $image,
             ];
         });
     }

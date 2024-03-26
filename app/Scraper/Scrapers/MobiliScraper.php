@@ -6,6 +6,7 @@ namespace App\Scraper\Scrapers;
 
 use App\Exceptions\ScrapingFailedException;
 use App\Models\ProductRetailer;
+use App\Price;
 use App\RetailerType;
 use App\Scraper\ScrapData;
 use Symfony\Component\DomCrawler\Crawler;
@@ -22,7 +23,7 @@ class MobiliScraper extends AbstractHtmlScraper
         $price = $this->scrapPrice($crawler, $productRetailer);
         $image = $this->scrapImage($crawler);
 
-        return new ScrapData($price, $image);
+        return new ScrapData(new Price($price), $image);
     }
 
     /**

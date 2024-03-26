@@ -7,6 +7,7 @@ namespace Tests\Unit\Scraper\Scrapers;
 use App\Client\HttpClientInterface;
 use App\Exceptions\ScrapingFailedException;
 use App\Models\ProductRetailer;
+use App\Price;
 use App\Scraper\ScrapData;
 use App\Scraper\Scrapers\SkytechScraper;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -36,7 +37,7 @@ class SkytechScraperTest extends TestCase
             ->willReturn(self::getTestData('skytech.txt'));
 
         self::assertEquals(
-            new ScrapData('273.19', 'https://www.skytech.lt/images/medium/99/3086899.jpg'),
+            new ScrapData(new Price('273.19'), 'https://www.skytech.lt/images/medium/99/3086899.jpg'),
             $this->scraper->scrap(new ProductRetailer(['url' => 'http://temp']))
         );
     }
@@ -62,7 +63,7 @@ class SkytechScraperTest extends TestCase
             ->willReturn('<span class="num"><span>273.19€</span></span>');
 
         self::assertEquals(
-            new ScrapData('273.19', null),
+            new ScrapData(new Price('273.19'), null),
             $this->scraper->scrap(new ProductRetailer(['url' => 'http://temp']))
         );
     }

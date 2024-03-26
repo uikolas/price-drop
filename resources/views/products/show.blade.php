@@ -15,7 +15,7 @@
                 <div class="card-body">
                     <h2 class="card-title">{{ $product->name }}</h2>
                     @if ($bestRetailer)
-                        <h6>Best retailer: <a href="{{ $bestRetailer->url }}" target="_blank"><strong>{{ $bestRetailer->type->name }}</strong></a> with price: <strong>{{ $bestRetailer->price }} {{ $bestRetailer->currency }}</strong></h6>
+                        <h6>Best retailer: <a href="{{ $bestRetailer->url }}" target="_blank"><strong>{{ $bestRetailer->type->name }}</strong></a> with price: <strong>{{ $bestRetailer->price->getFormatted() }}</strong></h6>
                         <h6>Last update: {{ $bestRetailer->updated_at->diffForHumans() }}</h6>
                     @endif
                 </div>
@@ -44,7 +44,7 @@
                         <tr>
                             <td><span class="badge text-bg-secondary">{{ $productRetailer->type->name }}</span></td>
                             <td><a href="{{ $productRetailer->url }}" target="_blank">{{ Str::limit($productRetailer->url, 50) }}</a></td>
-                            <td>{{ $productRetailer->price }} {{ $productRetailer->currency }}</td>
+                            <td>{{ $productRetailer->price?->getFormatted() }}</td>
                             <td>{{ $productRetailer->price_updated_at?->diffForHumans() }}</td>
                             <td>
                                 <form action="{{ route('trigger', [$productRetailer]) }}" method="POST">

@@ -7,6 +7,7 @@ namespace Tests\Unit\Scraper\Scrapers;
 use App\Client\HttpClientInterface;
 use App\Exceptions\ScrapingFailedException;
 use App\Models\ProductRetailer;
+use App\Price;
 use App\Scraper\ScrapData;
 use App\Scraper\Scrapers\MobiliScraper;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -36,7 +37,7 @@ class MobiliScraperTest extends TestCase
             ->willReturn(self::getTestData('mobili.txt'));
 
         self::assertEquals(
-            new ScrapData('189.00', 'https://www.mobili.lt/images/bigphones/nokia_nokia_g50_823045.png'),
+            new ScrapData(new Price('189.00'), 'https://www.mobili.lt/images/bigphones/nokia_nokia_g50_823045.png'),
             $this->scraper->scrap(new ProductRetailer(['url' => 'http://temp']))
         );
     }
@@ -61,7 +62,7 @@ class MobiliScraperTest extends TestCase
             ->willReturn('<div class="prices prices_full"><span class="ltl">189,00&nbsp;&euro;</span></div>');
 
         self::assertEquals(
-            new ScrapData('189.00', null),
+            new ScrapData(new Price('189.00'), null),
             $this->scraper->scrap(new ProductRetailer(['url' => 'http://temp']))
         );
     }

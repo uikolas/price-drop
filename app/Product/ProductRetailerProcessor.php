@@ -18,7 +18,6 @@ class ProductRetailerProcessor
     public function __construct(
         private readonly ScraperFactory $scraperFactory,
         private readonly NotificationDispatcher $notification,
-        private readonly PriceComparator $priceComparator,
     ) {
     }
 
@@ -35,7 +34,7 @@ class ProductRetailerProcessor
             $data = $scraper->scrap($productRetailer);
         } catch (FailedHttpRequestException $e) {
             if ($e->isNotFound()) {
-                $productRetailer->resetPrice();
+                $productRetailer->price = null;
                 $productRetailer->save();
 
                 return;
@@ -46,19 +45,15 @@ class ProductRetailerProcessor
 
         $this->updateProductRetailer($productRetailer, $data);
 
-        if ($notify && $this->priceComparator->isPriceLessThanAnother($productRetailer->price, $bestRetailer?->price)) {
+        if ($notify && $productRetailer->price?->lessThan($bestRetailer?->price)) {
             $this->notification->send($product->user, new PriceDrop($productRetailer));
         }
     }
 
     private function updateProductRetailer(ProductRetailer $productRetailer, ScrapData $data): void
     {
-        if (!$this->priceComparator->arePricesEqual($productRetailer->price, $data->getPrice())) {
-            $productRetailer->updatePrice($data->getPrice());
-        }
-
-        if ($data->getCurrency() !== null) {
-            $productRetailer->currency = $data->getCurrency();
+        if (!$productRetailer->price?->equals($data->getPrice())) {
+            $productRetailer->price = $data->getPrice();
         }
 
         if ($data->getImage() !== null) {

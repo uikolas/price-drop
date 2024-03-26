@@ -7,6 +7,7 @@ namespace App\Scraper\Scrapers;
 use App\Client\HttpClientInterface;
 use App\Exceptions\ScrapingFailedException;
 use App\Models\ProductRetailer;
+use App\Price;
 use App\RetailerType;
 use App\Scraper\ScrapData;
 use App\Scraper\ScraperInterface;
@@ -38,7 +39,7 @@ class AmazonScraper implements ScraperInterface
         $price = $matches[1];
         $image = $this->scrapImage($response);
 
-        return new ScrapData($price, $image);
+        return new ScrapData(new Price($price), $image);
     }
 
     private function scrapImage(string $response): ?string
